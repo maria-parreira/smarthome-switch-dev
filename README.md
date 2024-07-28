@@ -29,7 +29,7 @@ The objective of this project is to develop a system that allows users to manage
 
 ## Domain Model
 
-![Domain Model](Documentation/uml/Wiki/DomainModel/DomainModel.png)
+![Domain Model](documentation/uml/Wiki/DomainModel/DomainModel.png)
 
 ## Getting Started
 
