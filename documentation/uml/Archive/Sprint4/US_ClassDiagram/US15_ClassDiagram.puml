@@ -1,0 +1,86 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+
+SIV280 "1" -- "1" SIV280Value : uses >
+SIV280 "1" -- "1" DeviceId : contains >
+SIV280 "1" -- "1" ActuatorModelID : contains >
+SIV280 "1" -- "1" ActuatorID : contains >
+ActuatorID "1" ..|> "1" DomainID : implements >
+SIV280 "1" ..|> "1" "Actuator " : implements >
+SIV280 "1" ..|> "1" AggregateRoot : implements >
+SIV280Value "1" ..|> "1" ValueObject : implements >
+SIV280Value "1" ..|> "1" Value : implements >
+
+
+interface "Actuator "{
+}
+
++class SIV280 {
+-actuatorValue:SIV280Value
+-actuatorID: ActuatorID
+-deviceID: DeviceID
+-actuatorModelID: ActuatorModelID
++ SIV280 (actuatorValue: SIV280Value, actuatorID: ActuatorID, deviceID: DeviceID, actuatorModelID: ActuatorModelID): SIV280
++ identity() : ActuatorID
++ sameAs(object: Object): boolean
++ equals(object: Object): boolean
++ setValue() : ActuatorValue
+}
+
++class SIV280Value {
+- nValue: int
+- minValue : int
+- maxValue : int
++ SIV280Value (nValue: int): SIV280Value
+- areConstructorArgumentsValid(nValue: int) : boolean
++ equals(object: Object): boolean
++ toString() : String
+}
+
+
++interface Value {
++ getValue() : Value
+}
+
++class ActuatorID {
+- actuatorID: String
++ ActuatorID (actuatorID: actuatorID): ActuatorID
+- areConstructorArgumentsValid (nValue: int): boolean
++ equals(object: Object) : boolean
++ toString() : String
+}
+
+class DeviceId{
+- _id: String
++ DeviceId(id: String): DeviceId
++ equals (object: Object): boolean
++ hashCode(): int
++ toString(): String
+}
+
+class ActuatorModelID{
+- _id: String
++ ActuatorModelID(id: String): ActuatorModelID
++ equals (object: Object): boolean
++ toString(): String
+}
+
++interface DomainID{
+}
+
++interface AggregateRoot{
+}
+
++interface ValueObject{
+}
+
+
+
+
+
+
+
+
+
+@enduml

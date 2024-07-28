@@ -1,0 +1,57 @@
+  @startuml
+'https://plantuml.com/sequence-diagram
+
+title <font color=#800020>US12: Add an actuator to an existing device in a room</font>
+
+autonumber
+
+participant ":US12AddActuatorToRoomController"
+participant "myHouse :House"
+participant "myRoom :Room"
+participant "myDevice :Device"
+participant "myCatalogue :ActuatorCatalogue"
+participant "myActuator :Actuator"
+participant ":ActuatorMapper"
+
+[o-> ":US12AddActuatorToRoomController" : addActuatorToDevice(entryDTO)
+activate ":US12AddActuatorToRoomController"
+":US12AddActuatorToRoomController" -> "myHouse :House" : getRoomByName(entryDTO._roomName)
+activate "myHouse :House"
+":US12AddActuatorToRoomController" <-- "myHouse :House" : myRoom
+deactivate "myHouse :House"
+":US12AddActuatorToRoomController" -> "myRoom :Room" : getDeviceByName(entryDTO._deviceName)
+activate "myRoom :Room"
+":US12AddActuatorToRoomController" <-- "myRoom :Room" : myDevice
+deactivate "myRoom :Room"
+":US12AddActuatorToRoomController" ->"myDevice :Device" ++ : myDevice.getDeviceIsActive()
+":US12AddActuatorToRoomController" <-- "myDevice :Device" : true
+deactivate "myDevice :Device"
+note right
+only continues if true
+else returns null
+end note
+":US12AddActuatorToRoomController" -> "myDevice :Device" : addActuator(entryDTO._strActuatorModel, this._catalogue)
+activate "myDevice :Device"
+"myDevice :Device" -> "myCatalogue :ActuatorCatalogue" : getActuator(entryDTO._strActuatorModel)
+activate "myCatalogue :ActuatorCatalogue"
+"myCatalogue :ActuatorCatalogue" -> "myActuator :Actuator"** : Actuator(myCatalogue)
+note left
+in fact the Class.forName(strModelPath).
+getConstructor(ActuatorCatalogue.class).
+newInstance(this) is called
+end note
+activate "myActuator :Actuator"
+"myActuator :Actuator" --> "myCatalogue :ActuatorCatalogue" : myActuator
+deactivate "myActuator :Actuator"
+"myDevice :Device" <-- "myCatalogue :ActuatorCatalogue" : myActuator
+deactivate "myCatalogue :ActuatorCatalogue"
+":US12AddActuatorToRoomController" <-- "myDevice :Device" : myActuator
+deactivate "myDevice :Device"
+":US12AddActuatorToRoomController" --> ":ActuatorMapper" : convertToDTO(myActuator)
+activate ":ActuatorMapper"
+":US12AddActuatorToRoomController" <-- ":ActuatorMapper" : myActuatorDTO
+deactivate ":ActuatorMapper"
+[o<-- ":US12AddActuatorToRoomController" : myActuatorDTO
+deactivate ":US12AddActuatorToRoomController"
+
+@enduml

@@ -1,0 +1,36 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+!theme mars
+skinparam sequenceMessageAlign direction
+title <font color=#800020> US06:  I want to get a list of all devices in a room </font>
+
+autonumber
+
+participant ":getRoomDevicesController"
+participant ":roomsMapper"
+participant ":myRoom: Room"
+participant ":devicesMapper"
+
+[o-> ":getRoomDevicesController" :getListOfDevicesInRoom (roomDTOName)
+activate ":getRoomDevicesController"
+
+":getRoomDevicesController" -> ":roomsMapper" : getRoomFromDomain(roomDTOName)
+activate ":roomsMapper"
+":roomsMapper" --> ":getRoomDevicesController" : myRoom
+
+
+":getRoomDevicesController" -> ":myRoom: Room" : getDevices (myRoom)
+activate ":myRoom: Room"
+":myRoom: Room" --> ":getRoomDevicesController" : devices
+deactivate ":myRoom: Room"
+
+":getRoomDevicesController" -> ":devicesMapper" : deviceDomain2DTO(devices)
+activate ":devicesMapper"
+
+":devicesMapper" --> ":getRoomDevicesController" : devicesDTO
+deactivate ":devicesMapper"
+
+[o<-- ":getRoomDevicesController" : devicesDTO
+
+@enduml

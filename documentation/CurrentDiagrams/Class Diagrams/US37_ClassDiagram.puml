@@ -1,0 +1,179 @@
+@startuml
+
+title <font color=#800020> UC37: I want to close a blind roller that is in a room </font>
+class ActuatorControllerWeb {
+    - serviceActuator: ServiceActuator
+    -  serviceSensor: ServiceSensor
+    -  serviceSensorReading: ServiceSensorReading
+    + ActuatorControllerWeb(serviceActuator: ServiceActuator, serviceSensor: ServiceSensor, serviceSensorReading: ServiceSensorReading)
+    + closeRollerBlind(actuatorId: String, actuatorDTO: ActuatorWebDTO): ResponseEntity<ActuatorWebDTO>
+
+}
+
+class ServiceActuator {
+    - repoActuator: IRepositoryActuator
+    - factoryActuator: FactoryActuator
+    - repoDevice: IRepositoryDevice
+    +ServiceActuator(repoActuator: IRepositoryActuator, factoryActuator: FactoryActuator, repoDevice: IRepositoryDevice)
+    +getActuator(id: ActuatorID): Actuator
+    +closeRollerBlind(actuator: Actuator, newValue: OPNCL0100Value): OPNCL0100
+    +canRollerBlindBeClosed((inputValue: int, latestReading: String)): boolean
+    +areInSameDeviceWithValidModels(actuator: Actuator, sensor: Sensor): boolean
+    -isOPNCL0100(actuator: Actuator): boolean
+    -isCAP200(sensor: Sensor): boolean
+}
+
+class ServiceSensor {
+
+    - factorySensor: FactorySensor
+    - repoSensor: IRepositorySensor
+    -repoDevice: IRepositoryDevice
+    +ServiceSensor(factorySensor: FactorySensor, repoSensor: IRepositorySensor, repoDevice: IRepositoryDevice)
+
+    +getSensor(id: SensorID): Sensor
+
+}
+
+class ServiceSensorReading {
+    - repositorySensorReading: IRepositorySensorReading
+    - repositorySensor: IRepositorySensor
+    + ServiceSensorReading(repositorySensorReading: IRepositorySensorReading, repositorySensor: IRepositorySensor)
+    +getLatestReadingFromSensor(sensorID: SensorID): Reading
+}
+
+interface IRepositoryActuator {
+    +ofIdentity(ActuatorID): Optional<Actuator>
+    +update(Actuator): void
+
+
+}
+
+
+interface IRepositorySensor {
+    +ofIdentity(id: SensorID): Optional<Sensor>
+
+
+}
+
+
+interface IRepositorySensorReading {
+    +getLatestReadingFromSensor(sensorID: SensorID): Reading
+}
+
+class ActuatorMapper {
+    + convertToActuatorID(actuatorID: String): ActuatorID
+    + convertToActuatorWebDTO(actuatorID: ActuatorID, deviceID: DeviceId, modelID: ActuatorModelID, value: Value): ActuatorWebDTO
+    + convertToValue(value: String, modelName: String): Value
+}
+
+class DeviceMapper {
+    +DTOtoDevice(Device): DeviceWebDTO
+}
+
+class SensorMapper {
+    +convertToSensorID(String): SensorID
+}
+
+  class DeviceId {
+        - deviceId: String
+        + DeviceId(deviceId: String)
+    }
+
+    class SensorID {
+        - sensorId: String
+        + SensorID(sensorId: String)
+    }
+
+    class ActuatorID {
+        - actuatorId: String
+        + ActuatorID(actuatorId: String)
+        }
+
+
+
+      class OPNCL0100Value {
+            -dValue: int
+            + OPNCL0100Value(dValue: int )
+            + getValue(): int
+            + toString(): String
+        }
+
+       class CAP200 {
+           -sensorValue: CAP200Value
+           -sensorID: SensorID
+           -deviceID: DeviceId
+           -sensorModelID: SensorModelID
+           -sensorData: Map<Integer, Integer>
+           +CAP200(deviceID: DeviceId, sensorModelID: SensorModelID, sensorID: SensorID)
+           +getValue(): Value
+           +getSensorModelID(): SensorModelID
+       }
+
+
+  class OPNCL0100  {
+         -actuatorValue: OPNCL0100Value
+         - actuatorID: ActuatorID:
+         -  deviceID: DeviceId
+          - actuatorModelID: ActuatorModelID
+         + OPNCL0100(actuatorID: ActuatorID, deviceID: DeviceId, actuatorModelID: ActuatorModelID)
+         + setValue(value: Value): Value
+         + getDeviceID(): DeviceId
+         + getActuatorModelID(): ActuatorModelID
+         + getValue(): OPNCL0100Value
+     }
+
+        class OPNCLEntryDTO {
+              -  actuatorID: String
+              -  sensorID: String
+               - inputValue: String
+               + OPNCLEntryDTO(String actuatorID, String sensorID, String inputValue)
+               + getActuatorID(): String
+               + getSensorID(): String
+               + getValue(): String
+           }
+
+           class ActuatorWebDTO  {
+                   String actuatorId
+                   String deviceId
+                   String actuatorModelId
+                   String actuatorValue
+                   + ActuatorWebDTO(String actuatorId, String deviceId, String actuatorModelId, String actuatorValue)
+                   + getActuatorId(): String
+                   + getDeviceId(): String
+                   + getActuatorValue(): String
+               }
+
+
+ActuatorControllerWeb --> ServiceActuator : uses >
+ActuatorControllerWeb --> ServiceSensor : uses >
+ActuatorControllerWeb --> ServiceSensorReading : uses >
+ActuatorControllerWeb --> ActuatorMapper : uses >
+ActuatorControllerWeb --> DeviceMapper : uses >
+ActuatorControllerWeb --> SensorMapper: uses >
+ActuatorControllerWeb --> OPNCLEntryDTO : requestBody >
+ActuatorControllerWeb --> ActuatorWebDTO : responseBody >
+
+ServiceActuator --> IRepositoryActuator : uses >
+
+
+ActuatorMapper --> ActuatorID : instantiates >
+ActuatorMapper --> OPNCL0100Value : instantiates >
+ActuatorMapper --> OPNCLEntryDTO : uses >
+ActuatorMapper --> ActuatorWebDTO : uses >
+
+DeviceMapper --> DeviceId : instantiates >
+SensorMapper --> SensorID : instantiates >
+
+
+
+
+ServiceSensor --> IRepositorySensor : uses >
+
+
+ServiceSensorReading --> IRepositorySensorReading : uses >
+ServiceSensorReading --> IRepositorySensor : uses >
+
+
+IRepositoryActuator --> OPNCL0100 : retrieves >
+IRepositorySensor --> CAP200 : retrieves >
+@enduml

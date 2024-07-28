@@ -1,0 +1,31 @@
+@startuml ONF01A_Class_Diagram
+
+class ONF01A {
+    - _actuatorType: ActuatorType
+    - _value: Value
+    + ONF01A(catalogue: Catalogue)
+    + getActuatorType(): ActuatorType
+    + setValue(Value value): Value
+}
+
+interface Actuator {
+    + setValue(Value value): Value
+    + getActuatorType(): ActuatorType
+}
+
+interface Value {
+}
+
+class ONF01AValue {
+    - _sValue: String
+    - areConstructorArgumentsValid(sValue: String): boolean
+    + ONF01AValue(boolean sValue)
+    + toString(): String
+}
+
+
+ONF01A ..|> Actuator : implements
+ONF01A -- ONF01AValue : uses >
+ONF01AValue ..|> Value : implements
+
+@enduml

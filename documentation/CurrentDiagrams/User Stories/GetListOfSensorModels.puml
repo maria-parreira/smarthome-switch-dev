@@ -1,0 +1,42 @@
+@startuml
+'https://plantuml.com/use-case-diagram
+
+title <font color=#800020> List all Sensor Models by Sensor Type </font>
+
+autonumber
+
+participant ":GetSensorModelsController"
+participant ":ServiceSensorModel"
+participant ":SensorTypeMapper"
+participant ":IRepositorySensorModel"
+participant ":SensorModelMapper"
+
+[o-> ":GetSensorModelsController" : getSensorModels(sensorTypeDTO)
+activate ":GetSensorModelsController"
+":GetSensorModelsController" -> ":ServiceSensorModel": getModelsBySensorType(sensorTypeDTO)
+activate ":ServiceSensorModel"
+":ServiceSensorModel" -> ":SensorTypeMapper": getModelsBySensorType(sensorTypeDTO.getSensorTypeID)
+activate ":SensorTypeMapper"
+":SensorTypeMapper" --> ":ServiceSensorModel": sensorTypeID
+deactivate ":SensorTypeMapper"
+":ServiceSensorModel" -> ":IRepositorySensorModel": getModelsBySensorType(sensorTypeID)
+activate ":IRepositorySensorModel"
+":IRepositorySensorModel" --> ":ServiceSensorModel": sensorModels
+deactivate ":IRepositorySensorModel"
+
+":ServiceSensorModel" --> ":GetSensorModelsController": sensorModels
+deactivate ":ServiceSensorModel"
+
+loop for each sensorModel in sensorModels
+":GetSensorModelsController" -> ":SensorModelMapper": sensorModelListToDTO(sensorModels)
+activate ":SensorModelMapper"
+
+":SensorModelMapper" --> ":GetSensorModelsController": sensorModelsDTOs
+deactivate ":SensorModelMapper"
+
+end
+
+[o<-- ":GetSensorModelsController" : sensorModelsDTOs
+deactivate ":GetSensorModelsController"
+
+@enduml

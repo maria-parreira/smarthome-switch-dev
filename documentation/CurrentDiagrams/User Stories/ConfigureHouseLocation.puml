@@ -1,0 +1,101 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title <font color=#800020>UC1:Configure the Location of the House</font>
+
+autonumber
+
+participant ":ConfigureHouseLocationController"
+participant ":HouseMapper"
+participant "houseId:HouseId"
+participant "gps:GPSCoordinates"
+participant "address:Address"
+participant "zipCode:ZipCode"
+participant "location:Location"
+participant ":HouseService"
+participant ":IRepositoryHouse"
+participant "house:House"
+
+
+[o->":ConfigureHouseLocationController": configureLocation(LocationDTO)
+activate ":ConfigureHouseLocationController"
+
+":ConfigureHouseLocationController" -> ":HouseMapper" : DTOtoHouseId(LocationDto.getHouseId())
+activate ":HouseMapper"
+
+":HouseMapper" -> "houseId:HouseId"** : HouseId(houseId)
+activate "houseId:HouseId"
+
+"houseId:HouseId" --> ":HouseMapper" : houseId
+deactivate "houseId:HouseId"
+
+":HouseMapper" --> ":ConfigureHouseLocationController" : houseId
+
+":ConfigureHouseLocationController" -> ":HouseMapper" : DTOToLocation(locationDto)
+
+":HouseMapper" -> "gps:GPSCoordinates"** : GPSCoordinates(locationDto.getLatitude(),locationDto.getLongitude())
+activate "gps:GPSCoordinates"
+
+"gps:GPSCoordinates" --> ":HouseMapper" : gps
+deactivate "gps:GPSCoordinates"
+
+":HouseMapper" -> "address:Address"** : Address(locationDto.getAddress())
+activate "address:Address"
+
+"address:Address" --> ":HouseMapper" : address
+deactivate "address:Address"
+
+":HouseMapper" -> "zipCode:ZipCode"** : ZipCode(locationDto.getCountry(),locationDto.getZipCode())
+activate "zipCode:ZipCode"
+
+"zipCode:ZipCode" --> ":HouseMapper" : zipCode
+deactivate "zipCode:ZipCode"
+
+":HouseMapper" -> "location:Location"** : Location(address,zipCode,gps)
+activate "location:Location"
+
+"location:Location" --> ":HouseMapper" : newLocation
+deactivate "location:Location"
+
+":HouseMapper" --> ":ConfigureHouseLocationController" : newLocation
+deactivate ":HouseMapper"
+
+":ConfigureHouseLocationController" -> ":HouseService" : configureLocation(newLocation,houseId)
+activate ":HouseService"
+
+":HouseService" -> ":IRepositoryHouse" : ofIdentity(houseId.isPresent())
+activate ":IRepositoryHouse"
+
+note right
+only continue if true
+else throws IllegalArgumentException
+end note
+
+":IRepositoryHouse" --> ":HouseService" : house
+deactivate ":IRepositoryHouse"
+
+":HouseService" -> "house:House"** : configureLocation(newLocation)
+activate "house:House"
+
+"house:House" --> ":HouseService" : true
+deactivate "house:House"
+
+":HouseService" -> ":IRepositoryHouse" : update(house)
+activate ":IRepositoryHouse"
+
+":IRepositoryHouse" --> ":HouseService" : house
+deactivate ":IRepositoryHouse"
+
+":HouseService" --> ":ConfigureHouseLocationController" : house
+deactivate ":HouseService"
+
+":ConfigureHouseLocationController" -> ":HouseMapper" : houseToDTO(house)
+activate ":HouseMapper"
+
+":HouseMapper" --> ":ConfigureHouseLocationController" : houseDTO
+deactivate ":HouseMapper"
+
+[o<-- ":ConfigureHouseLocationController" : houseDTO
+
+
+@enduml

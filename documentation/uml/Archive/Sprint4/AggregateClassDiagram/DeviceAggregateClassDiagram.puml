@@ -1,0 +1,118 @@
+@startuml
+
+'https://plantuml.com/class-diagram
+
+class Device
+class DeviceId
+class DeviceModel
+class DeviceName
+class RoomId
+class ImplFactoryDevice
+class ActivationStatus
+
+interface AggregateRoot
+interface DomainId
+interface DomainEntity
+interface FactoryDevice
+interface ValueObject
+
+Device ..|> AggregateRoot : implements >
+DeviceId ..|> DomainId : implements >
+RoomId ..|> DomainId : implements >
+ActivationStatus ..|> ValueObject : implements >
+DeviceName ..|> ValueObject : implements >
+DeviceModel ..|> ValueObject : implements >
+ImplFactoryDevice ..|> FactoryDevice : implements
+
+
+
+
+Device <-- ImplFactoryDevice : creates <
+Device <-- DeviceId : has >
+Device <-- RoomId : has >
+Device <-- ActivationStatus : has >
+Device <-- DeviceName : has >
+Device <-- DeviceModel : has >
+Device -- RepositoryDevice : uses >
+AggregateRoot --|> DomainEntity : extends >
+DomainId --|> ValueObject
+RepositoryDevice ..|> RepoInterface : implements >
+
+
++class DeviceId {
+-_id: string
++DeviceId(id: string)
++equals(object: Object): boolean
++toString(): string
+}
+
++class DeviceModel {
+ -_model: string
+ +DeviceModel(model: string)
+ +equals(object: Object): boolean
+ +toString(): string
+ }
+
+ +class DeviceName {
+ -_name: string
+ +DeviceName(name: string)
+ +equals(object: Object): boolean
+ +toString(): string
+ }
+
++class Device {
+-_id: DeviceId
+-_roomId: RoomId
+-_activationStatus: ActivationStatus
+-_deviceName: DeviceName
+-_deviceModel: DeviceModel
+#Device(deviceId: DeviceId, roomId: RoomId, activationStatus: ActivationStatus, deviceName: DeviceName, deviceModel: DeviceModel)
++identity(): DeviceId
++getRoomId(): RoomId
++getDeviceName(): DeviceName
++getDeviceModel(): DeviceModel
++getActivationStatus(): ActivationStatus
++sameAs(object: Object): boolean
++equals(object: Object): boolean
++deactivateDevice()
+}
+
++class RoomId {
+-_id: string
++RoomId(id: string)
++equals(object: Object): boolean
++toString(): string
+}
+
+class ActivationStatus{
+-_isActive: boolean
++ActivationStatus(status: boolean)
++equals(object: Object): boolean
++toString(): string
+}
+
+class ImplFactoryDevice {
++createDevice(deviceId: DeviceId, roomId: RoomId, activationStatus: ActivationStatus, deviceName: DeviceName, deviceModel: DeviceModel): Device
+}
+
+class RepositoryDevice {
+    + DATA: Map<DeviceId, Device>
+    + save(device) : Device
+    + update(device) : Device
+    + findAll()
+    + ofIdentity(id) : Device
+    + containsOfIdentity(id) : boolean
+
+}
+
+interface RepoInterface{
++ save() : T
++ findAll() : T
++ ofIdentity() : T
++ containsOfIdentity() : T
+ }
+interface FactoryDevice {
++createDevice(deviceId: DeviceId, roomId: RoomId, activationStatus: ActivationStatus, deviceName: DeviceName, deviceModel: DeviceModel): Device
+}
+
+@enduml

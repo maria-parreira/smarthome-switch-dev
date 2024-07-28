@@ -1,0 +1,53 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+
+
+
+Interface Actuator
+Interface Value
+class OPNCL0100
+class OPNCL0100Value
+
+
+
+OPNCL0100 ..|> Actuator : implements
+OPNCL0100 o-- OPNCL0100Value : uses >
+OPNCL0100Value ..|> Value : implements
+
+
+
+
+
+Interface Actuator {
++ setValue(value) : Value
++ getActuatorType() : ActuatorType
+ }
+
+Interface Value {
+
+ }
+
+class OPNCL0100 {
+ -_actuatorType : String
+' -TYPE : String
+ -_value : OPNCL0100Value
+ + OPNCL0100(catalogue) : OPNCL0100
+ + getActuatorType() : ActuatorType
+ + setValue(value) : Value
+ }
+
+ class OPNCL0100Value {
+ -_dValue : int
+ -min : int
+ -max : int
++ OPNCL0100Value(dValue) : OPNCL0100Value
+- areConstructorArgumentsValid(dValue) : boolean
++ toString() : String
++ getValue() : int
+ }
+
+
+}
+
+@enduml

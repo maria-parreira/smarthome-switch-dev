@@ -1,0 +1,26 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+
+title Get List of Houses
+
+autonumber
+
+[o-> ":GetListOfHousesController" : getHouses()
+activate ":GetListOfHousesController"
+
+":GetListOfHousesController"->":RepositoryHouse" : findAll()
+activate ":RepositoryHouse"
+
+":RepositoryHouse"-->":GetListOfHousesController" : houses
+deactivate ":RepositoryHouse"
+
+":GetListOfHousesController"->":HouseMapper" : housesListToDTO (houses)
+activate ":HouseMapper"
+
+":HouseMapper"-->":GetListOfHousesController" : housesDTO
+deactivate ":HouseMapper"
+
+[o<--":GetListOfHousesController" : housesDTO
+deactivate ":GetListOfHousesController"
+@enduml

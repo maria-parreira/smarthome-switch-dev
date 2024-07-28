@@ -1,0 +1,58 @@
+@startuml
+
+title <font color=#800020>UC9: List all devices in a house, grouped by device functionality types. It must include device location</font>
+
+autonumber
+
+
+participant ":GetDevicesByFunctionalityController"
+participant ":ServicesDeviceByType"
+participant ":IRepositorySensor"
+participant ":IRepositoryActuator"
+participant ":DeviceMapper"
+
+
+[o-> ":GetDevicesByFunctionalityController" ++: retrieveDevicesByType()
+":GetDevicesByFunctionalityController" -> ":ServicesDeviceByType" ++: getDevicesByType()
+":ServicesDeviceByType" -> ":IRepositorySensor": findAll()
+":IRepositorySensor" --> ":ServicesDeviceByType" --: sensors
+
+":ServicesDeviceByType" -> ":IRepositoryActuator" ++: findAll()
+":IRepositoryActuator" --> ":ServicesDeviceByType" --: actuators
+
+":ServicesDeviceByType" -> ":ServicesDeviceByType": assignDevicesByType(groupedDevices, sensors, actuators)
+    note right of ":ServicesDeviceByType"
+        groupedDevices is a Map<String,List> instantiated by the Controller.
+    end note
+
+":ServicesDeviceByType" -> ":ServicesDeviceByType": assignDeviceToSensorGroupType(groupedDevices, sensors)
+loop for each sensor
+    ":ServicesDeviceByType" -> ":IRepositorySensorModel" ++: ofIdentity(sensor.getSensorModelID())
+    ":IRepositorySensorModel" --> ":ServicesDeviceByType" --: model
+    ":ServicesDeviceByType" -> ":IRepositorySensorType" ++: ofIdentity(model.get().getSensorTypeID())
+    ":IRepositorySensorType" --> ":ServicesDeviceByType" --: type
+    ":ServicesDeviceByType" -> ":IRepositoryDevice" ++: ofIdentity(sensor.getDeviceID())
+    ":IRepositoryDevice" --> ":ServicesDeviceByType" --: device
+    ":ServicesDeviceByType" -> ":ServicesDeviceByType": addDeviceToTypeMap(groupedDevices, type, device)
+    note right of ":GetDevicesByFunctionalityController"
+        If the type does not yet exist in the map, a new key and list will be created, and the device will be added to the latter
+    end note
+end
+
+
+
+note right of ":ServicesDeviceByType"
+    Same process for actuators with assignDeviceToActuatorGroupType method
+end note
+
+":ServicesDeviceByType" -> ":ServicesDeviceByType": assignDeviceToSensorGroupType(groupedDevices, sensors)
+":ServicesDeviceByType" -> ":GetDevicesByFunctionalityController" --: groupedDevices
+":GetDevicesByFunctionalityController" -> ":DeviceMapper" ++: devicesMapDomainToDTO(groupedDevices)
+loop for each device
+    ":DeviceMapper" -> ":DeviceMapper": deviceDomainToDTO(device)
+end
+":DeviceMapper" --> ":GetDevicesByFunctionalityController" --: groupedDevicesDTO
+
+[o<-- ":GetDevicesByFunctionalityController": groupedDevicesDTO
+
+@enduml

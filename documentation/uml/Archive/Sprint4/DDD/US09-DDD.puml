@@ -1,0 +1,50 @@
+@startuml
+!theme mars
+skinparam sequenceMessageAlign direction
+
+autonumber
+
+title US09: I want to get a list of all devices in a house, grouped by device functionality types. It must include device location.
+[o-> ":US09GetDevicesByFunctionalityController" ++: getDevicesByTypeController()
+":US09GetDevicesByFunctionalityController" -> "repoSensor:RepositorySensor": findAll()
+"repoSensor:RepositorySensor" --> ":US09GetDevicesByFunctionalityController" --: sensors
+
+":US09GetDevicesByFunctionalityController" -> "repoActuator:RepositoryActuator" ++: findAll()
+"repoActuator:RepositoryActuator" --> ":US09GetDevicesByFunctionalityController" --: actuators
+
+":US09GetDevicesByFunctionalityController" -> ":US09GetDevicesByFunctionalityController": assignDevicesByType(groupedDevices, sensors, actuators)
+    note right of ":US09GetDevicesByFunctionalityController"
+        groupedDevices is a Map<String,List> instantiated by the Controller.
+    end note
+
+":US09GetDevicesByFunctionalityController" -> ":US09GetDevicesByFunctionalityController": assignDeviceToSensorGroupType(groupedDevices, sensors)
+loop for each sensor
+    ":US09GetDevicesByFunctionalityController" -> "repoSensorModel:RepositorySensorModel" ++: ofIdentity(sensor.getSensorModelID())
+    "repoSensorModel:RepositorySensorModel" --> ":US09GetDevicesByFunctionalityController" --: model
+    ":US09GetDevicesByFunctionalityController" -> "repoSensorType:RepositorySensorType" ++: ofIdentity(model.get().getSensorTypeID())
+    "repoSensorType:RepositorySensorType" --> ":US09GetDevicesByFunctionalityController" --: type
+    ":US09GetDevicesByFunctionalityController" -> "repoDevice:RepositoryDevice" ++: ofIdentity(sensor.getDeviceID())
+    "repoDevice:RepositoryDevice" --> ":US09GetDevicesByFunctionalityController" --: device
+    ":US09GetDevicesByFunctionalityController" -> ":US09GetDevicesByFunctionalityController": addDeviceToTypeMap(groupedDevices, type, device)
+    note right of ":US09GetDevicesByFunctionalityController"
+        If the type does not yet exist in the map, a new key and list will be created, and the device will be added to the latter
+    end note
+end
+
+
+
+note right of ":US09GetDevicesByFunctionalityController"
+    Same process for actuators with assignDeviceToActuatorGroupType method
+end note
+
+":US09GetDevicesByFunctionalityController" -> ":US09GetDevicesByFunctionalityController": assignDeviceToSensorGroupType(groupedDevices, sensors)
+
+":US09GetDevicesByFunctionalityController" -> ":DeviceMapper" ++: devicesMapDomainToDTO(groupedDevices)
+loop for each device
+    ":DeviceMapper" -> ":DeviceMapper": deviceDomainToDTO(device)
+end
+":DeviceMapper" --> ":US09GetDevicesByFunctionalityController" --: groupedDevicesDTO
+
+[o<-- ":US09GetDevicesByFunctionalityController": groupedDevicesDTO
+
+@enduml

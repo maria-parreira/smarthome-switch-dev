@@ -1,0 +1,55 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+title US08 : I want to deactivate a device, so that it is no longer used.
+
+[o-> ":US08DeactivateDeviceController" ++   : deactivateDevice(DeviceID)
+activate ":US08DeactivateDeviceController"
+
+":US08DeactivateDeviceController" -> ":DeviceMapper" : DTOToDeviceId(deviceDTO.getDeviceId)
+activate ":DeviceMapper"
+
+":DeviceMapper" --> ":US08DeactivateDeviceController" : deviceId
+deactivate ":DeviceMapper"
+
+":US08DeactivateDeviceController" -> "ServiceDevice:ServiceDevice" ** : DeactivateDevice(deviceId)
+activate "ServiceDevice:ServiceDevice"
+
+"ServiceDevice:ServiceDevice" -> "repositoryDevice:RepositoryDevice" : ofIdentity(deviceId)
+activate "repositoryDevice:RepositoryDevice"
+
+"repositoryDevice:RepositoryDevice" --> "ServiceDevice:ServiceDevice"  :myDevice
+deactivate "repositoryDevice:RepositoryDevice"
+
+"ServiceDevice:ServiceDevice" -> "myDevice :Device"  :myDevice.deactivateDevice()
+deactivate "repositoryDevice:RepositoryDevice"
+activate "myDevice :Device"
+
+
+
+"myDevice :Device" --> "ServiceDevice:ServiceDevice" : true
+deactivate "myDevice :Device"
+
+note right
+returns true if the device was successfully deactivated
+end note
+
+"ServiceDevice:ServiceDevice" -> "repositoryDevice:RepositoryDevice" : update(myDevice)
+activate "repositoryDevice:RepositoryDevice"
+
+"repositoryDevice:RepositoryDevice" --> "ServiceDevice:ServiceDevice" : myDevice
+deactivate "repositoryDevice:RepositoryDevice"
+
+"ServiceDevice:ServiceDevice" -> ":DeviceMapper" : deviceToDTO(myDevice)
+activate ":DeviceMapper"
+
+":DeviceMapper" --> ":US08DeactivateDeviceController" : deviceDTO
+deactivate ":DeviceMapper"
+
+[o<-- ":US08DeactivateDeviceController" : deviceDTO
+deactivate ":US08DeactivateDeviceController"
+
+
+@enduml

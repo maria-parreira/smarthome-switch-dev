@@ -1,0 +1,91 @@
+@startuml
+'https://plantuml.com/object-diagram
+
+object House
+object Device
+object Sensor
+object Actuator
+object Room
+object Location
+object GPSCoordinates
+object ActivityLog
+object Configuration
+object SensorType
+object SensorCatalogue
+object ActuatorCatalogue
+object ActuatorType
+
+House "1" -- "*" Room : manages >
+House "1" - "1" Location : has >
+Location "1" - "1" GPSCoordinates : uses >
+Room "1" -- "*" Device : contains >
+Actuator "*" -- "1" Device : has <
+Sensor "*" -- "1" Device :  <
+Sensor "*" -- "1" SensorType : defines <
+Device "1" -- "1" ActivityLog
+Device "1" -- "1" Configuration
+SensorCatalogue "1" -- "*" SensorType : keeps >
+ActuatorCatalogue "1" -- "*" ActuatorType : keeps >
+ActuatorType "1" -- "*" Actuator : defines >
+
+
+object House {
+factoryLocation
+factoryRoom
+}
+
+object Location {
+zipCode
+address
+factoryGPSCoordinates
+}
+
+object GPSCoordinates {
+latitude
+longitude
+}
+
+object Room {
+roomName
+floorNumber
+area
+height
+factoryDevice
+}
+
+object Device {
+deviceName
+state
+}
+
+object Actuator {
+}
+
+object ActuatorType {
+strDescription
+unit
+}
+
+object Sensor {
+}
+
+object SensorType {
+strSensorModel
+unit
+}
+
+object SensorCatalogue {
+}
+
+object ActuatorCatalogue{
+}
+
+object ActivityLog {
+}
+
+object Configuration {
+}
+
+
+
+@enduml

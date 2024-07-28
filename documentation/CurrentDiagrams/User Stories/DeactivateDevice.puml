@@ -1,0 +1,65 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title <font color=#800020> UC8 : I want to deactivate a device, so that it is no longer used. </font>
+
+autonumber
+
+[o-> ":DeactivateDeviceController" ++   : deactivateDevice(String deviceID)
+activate ":DeactivateDeviceController"
+
+":DeactivateDeviceController" -> ":DeviceMapper" : DTOToDeviceId(String deviceID)
+activate ":DeviceMapper"
+
+":DeviceMapper" -> ":DeviceId" ** : DeviceId(String deviceID)
+activate ":DeviceId"
+
+":DeviceId" --> ":DeviceMapper" : deviceId
+deactivate ":DeviceId"
+
+":DeviceMapper" --> ":DeactivateDeviceController" : deviceId
+deactivate ":DeviceMapper"
+
+":DeactivateDeviceController" -> ":ServiceDevice" : deactivateDevice(deviceId)
+activate ":ServiceDevice"
+
+":ServiceDevice" -> ":IRepositoryDevice" : ofIdentity(deviceId)
+activate ":IRepositoryDevice"
+
+":IRepositoryDevice" --> ":ServiceDevice"  :myDevice
+deactivate ":IRepositoryDevice"
+
+":ServiceDevice" -> "myDevice :Device"  :myDevice.deactivateDevice()
+deactivate ":IRepositoryDevice"
+activate "myDevice :Device"
+
+
+
+"myDevice :Device" --> ":ServiceDevice" : true
+deactivate "myDevice :Device"
+
+note right
+returns true if the device was successfully deactivated, else throws IllegalArgumentException.
+end note
+
+":ServiceDevice" -> ":IRepositoryDevice" : update(myDevice)
+activate ":IRepositoryDevice"
+
+":IRepositoryDevice" --> ":ServiceDevice" : myDevice
+deactivate ":IRepositoryDevice"
+
+":ServiceDevice" --> ":DeactivateDeviceController" : myDevice
+deactivate ":ServiceDevice"
+
+":DeactivateDeviceController" -> ":DeviceMapper" : deviceToDTO(myDevice)
+activate ":DeviceMapper"
+
+
+":DeviceMapper" --> ":DeactivateDeviceController" : myDeviceDTO
+deactivate ":DeviceMapper"
+
+[o<-- ":DeactivateDeviceController" : myDeviceDTO
+deactivate ":DeactivateDeviceController"
+
+
+@enduml

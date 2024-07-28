@@ -1,0 +1,18 @@
+.attribute-card ul {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between; /* Add this line */
+    width: 100%;
+    padding-left: 20px;
+    padding-right: 20px;
+    margin: 5px 0;
+    font-weight: normal;
+    list-style-type: none;
+}
+
+@media (max-width: 568px) {
+    .attribute-card ul {
+        flex-direction: column;
+    }
+}
+

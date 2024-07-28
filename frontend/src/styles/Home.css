@@ -1,0 +1,125 @@
+body {
+    font-family: 'Poppins';
+    color: white;
+    background: black;
+}
+
+/* Container styling */
+.container {
+    display: flex;
+    justify-content: center;
+    height: 90vh;
+}
+
+/* Card styling */
+.home-card {
+    width: 96%;
+    height: 90vh;
+    background: linear-gradient(to bottom, cornflowerblue, lightgreen);
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: center;
+}
+
+/* Header styling */
+.header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    font-size: large;
+    cursor: default;
+
+}
+
+
+
+/* Content styling */
+.content {
+    color: #fff;
+}
+
+.date {
+    font-size: 1.5rem;
+    cursor: default;
+}
+
+.time {
+    font-size: 1.5rem;
+}
+
+.temperature {
+    font-size: 6rem;
+    margin-top: 0;
+    cursor: default;
+}
+
+/* Sun times styling */
+.sun-times {
+    display: flex;
+    justify-content: space-between;
+    color: #fff;
+    font-size: 1rem;
+    cursor: default;
+}
+
+.sunrise, .sunset {
+    font-size: 1.25rem;
+}
+
+.sunrise {
+    left: 20px;
+}
+
+.sunset {
+    right: 20px;
+}
+
+/* Loading state styling */
+.loading {
+    font-size: 18px;
+    color: white;
+}
+
+.home-button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 3rem;
+    cursor: pointer;
+    transition: color 0.5s ease; /* Transition effect */
+}
+
+.home-button:hover {
+    transition: color 0.5s ease; /* Transition effect */
+    color: #0097ff;
+}
+
+.footer {
+    color: grey;
+    text-align: center;
+    padding: 5px 0;
+    position: absolute;
+    bottom: 350px;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+@media (max-width: 768px) {
+    .temperature {
+        font-size: 3rem;
+    }
+}
+
+@media (max-width: 568px) {
+    .header {
+        flex-direction: column;
+    }
+    h1 {
+        margin-block-end: 0;
+    }
+
+}

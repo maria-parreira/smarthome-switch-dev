@@ -1,0 +1,14 @@
+@startuml
+'https://plantuml.com/component-diagram
+
+
+package "Backend" {
+  folder "Server" {
+    }
+    folder "Database" {
+    }
+}
+
+"Server" ..> "Database"
+
+@enduml

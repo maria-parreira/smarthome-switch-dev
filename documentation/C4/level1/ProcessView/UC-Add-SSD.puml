@@ -1,0 +1,20 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+participant "<<system>> \nSmartHome" as SmartHome
+
+
+
+[o-> SmartHome: POST /X
+
+note right
+  Add X.
+  X can represent room, device, sensor, sensor type or actuator
+end note
+
+[o<-- SmartHome: 201 - CREATED + body
+
+
+@enduml

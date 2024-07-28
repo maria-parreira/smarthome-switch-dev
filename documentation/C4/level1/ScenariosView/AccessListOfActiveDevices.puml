@@ -1,0 +1,21 @@
+@startuml
+'https://plantuml.com/use-case-diagram
+
+left to right direction
+
+Actor Administrator as admin
+Actor PowerUser as pw
+Actor RoomOwner as ro
+
+
+usecase "UC: Access list of active devices" as UCAccessListOfActiveDevices
+
+
+
+ro --> UCAccessListOfActiveDevices
+admin --> UCAccessListOfActiveDevices
+pw --> UCAccessListOfActiveDevices
+
+
+
+@enduml

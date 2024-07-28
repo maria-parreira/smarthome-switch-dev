@@ -1,0 +1,65 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+box "SmartHome"
+    box " <<component>> \n     :Server"
+        participant ":Router"
+        participant ":Controller"
+        participant ":Mapper"
+        participant "vo :VO"
+        participant ":Service"
+        participant ":XRepository"
+        participant "xDM1 :XDataModel"
+        participant ":Factory"
+        participant "xObject :XDomainClass"
+        participant ":Driver"
+        participant "xObjectDTO :DTO"
+    endbox
+end box
+
+
+[o-> ":Router": GET /X
+":Router" -> ":Controller": getX()
+note right
+  Get list of X.
+  X can represent rooms, devices,
+  sensors, actuators or sensor readings
+end note
+
+":Controller" -> ":Mapper" : create VO()
+note left
+  createVO() can be called
+  several times according
+  to the requested X
+end note
+":Mapper" -> "vo :VO" **:  new VO()
+":Mapper" <-- "vo :VO": vo
+":Mapper" --> ":Controller": vo
+
+":Controller" -> ":Service": getX()
+":Service" -> ":Repository": findAll()
+":Repository" -> ":Driver" : findAll()
+":Driver" ->o] : query
+":Driver" <--o] : list<xDM1>
+":Driver" --> ":Repository" :  list<xDM1>
+":Repository" -> "xDM1 :XDataModel" : toDomain(list<xDM1>)
+loop dataModels in list<xDM1>
+"xDM1 :XDataModel" -> ":Factory" : createX()
+":Factory" -> "xObject :XDomainClass" **: new X()
+"xObject :XDomainClass" --> ":Factory" : xObject
+":Factory" --> "xDM1 :XDataModel" : xObject
+end
+"xDM1 :XDataModel" --> ":Repository" : list<xObject>
+
+":Repository" --> ":Service": list<xObject>
+":Service" --> ":Controller": list<xObject>
+":Controller" -> "xObjectDTO :DTO": domainToWebDTO(list<xObject>)
+"xObjectDTO :DTO" --> ":Controller" :list<xObjectDTO>
+":Controller" --> ":Router":  200 - OK + body
+[o<--":Router":  200 - OK + body
+
+
+
+@enduml

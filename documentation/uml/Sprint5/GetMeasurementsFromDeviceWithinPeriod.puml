@@ -1,0 +1,51 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+title I want to get a list of all measurement of a device in a room, in a given period.
+
+participant ":GetMeasurementsFromDeviceWithinPeriodController"
+participant ":DeviceMapper"
+participant "myDeviceID:DeviceID"
+participant ":SensorReadingMapper"
+participant "startTime:Timestamp"
+participant "endTime:Timestamp"
+participant ":ServiceSensorReading"
+participant ":IRepositorySensorReading"
+
+
+autonumber
+[o-> ":GetMeasurementsFromDeviceWithinPeriodController" ++: GetMeasurementsFromDeviceWithinPeriod(String deviceID, String startTime, String endTime)
+
+":GetMeasurementsFromDeviceWithinPeriodController" -> ":DeviceMapper" ++: DTOToDeviceId(String deviceID)
+":DeviceMapper" -> "myDeviceID:DeviceID" **: DeviceID(String deviceID)
+activate "myDeviceID:DeviceID"
+"myDeviceID:DeviceID" --> ":DeviceMapper" --: myDeviceID
+":DeviceMapper" --> ":GetMeasurementsFromDeviceWithinPeriodController" --: myDeviceID
+
+":GetMeasurementsFromDeviceWithinPeriodController" -> ":SensorReadingMapper" ++: DTOToTimestamp(String startTime)
+":SensorReadingMapper" -> "startTime:Timestamp" **: Timestamp.valueOf(String startTime)
+activate "startTime:Timestamp"
+"startTime:Timestamp" --> ":SensorReadingMapper" --: startTime
+":SensorReadingMapper" --> ":GetMeasurementsFromDeviceWithinPeriodController" --: startTime
+
+":GetMeasurementsFromDeviceWithinPeriodController" -> ":SensorReadingMapper" ++: DTOToTimestamp(String endTime)
+":SensorReadingMapper" -> "endTime:Timestamp" **: Timestamp.valueOf(String endTime)
+activate "endTime:Timestamp"
+"endTime:Timestamp" --> ":SensorReadingMapper" --: endTime
+":SensorReadingMapper" --> ":GetMeasurementsFromDeviceWithinPeriodController" --: endTime
+
+":GetMeasurementsFromDeviceWithinPeriodController" -> ":ServiceSensorReading" ++: getMeasurementsFromDeviceWithinPeriod(myDeviceID, startTime, endTime)
+":ServiceSensorReading" -> ":IRepositorySensorReading" ++: getMeasurementsFromDeviceWithinPeriod(myDeviceID, startTime, endTime)
+
+loop for each reading
+":IRepositorySensorReading" -> ":IRepositorySensorReading" : getMeasurementsFromDeviceWithinPeriod(myDeviceID, startTime, endTime)
+end loop
+
+":IRepositorySensorReading" --> ":ServiceSensorReading" --: readings
+":ServiceSensorReading" --> ":GetMeasurementsFromDeviceWithinPeriodController" --: readings
+
+":GetMeasurementsFromDeviceWithinPeriodController" -> ":SensorReadingMapper" ++: domainListToDTO(readings)
+":SensorReadingMapper" --> ":GetMeasurementsFromDeviceWithinPeriodController" --: readingsDTO
+[o<-- ":GetMeasurementsFromDeviceWithinPeriodController" --: readingsDTO
+
+@enduml

@@ -1,0 +1,42 @@
+@startuml
+'https://plantuml.com/use-case-diagram
+
+title <font color=#800020> List all Sensor Types </font>
+
+autonumber
+
+participant ":GetListOfSensorTypesController"
+participant ":ServiceSensorType"
+participant ":IRepositorySensorType"
+participant ":SensorTypeMapper"
+
+
+[o-> ":GetListOfSensorTypesController" : getSensorTypes()
+activate ":GetListOfSensorTypesController"
+
+":GetListOfSensorTypesController" -> ":ServiceSensorType": getSensorTypes()
+activate ":ServiceSensorType"
+
+":ServiceSensorType" -> ":IRepositorySensorType": findAll()
+activate ":IRepositorySensorType"
+
+":IRepositorySensorType" --> ":ServiceSensorType": sensorTypes
+deactivate ":IRepositorySensorType"
+
+":ServiceSensorType" --> ":GetListOfSensorTypesController": sensorTypes
+deactivate ":ServiceSensorType"
+
+loop for each sensorType in sensorTypes
+
+":GetListOfSensorTypesController" -> ":SensorTypeMapper": sensorTypeListToDTO(sensorTypes)
+activate ":SensorTypeMapper"
+
+":SensorTypeMapper" --> ":GetListOfSensorTypesController": sensorTypeDTOs
+deactivate ":SensorTypeMapper"
+
+end
+
+[o<-- ":GetListOfSensorTypesController" : sensorTypeDTOs
+deactivate ":GetListOfSensorTypesController"
+
+@enduml

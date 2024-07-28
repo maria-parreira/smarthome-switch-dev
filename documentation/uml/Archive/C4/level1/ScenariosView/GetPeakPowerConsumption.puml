@@ -1,0 +1,17 @@
+@startuml
+'https://plantuml.com/use-case-diagram
+
+left to right direction
+
+Actor Administrator as admin
+Actor PowerUser as pw
+
+
+usecase "UC36: Get peak power consumption" as UC36
+usecase "UC33: Get readings of device within Period" as UC33
+
+admin --> UC36
+pw --> UC36
+UC36 --> UC33 #line.dashed : <<includes>>
+
+@enduml

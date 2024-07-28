@@ -1,0 +1,29 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+box "  <<system>> \n SmartHome"
+    participant " <<container>> \n :Frontend" as frontend
+    participant " <<container>> \n :Backend" as backend
+    participant " <<container>> \n :WeatherService" as ws
+end box
+
+
+
+[o-> frontend: Configure X
+
+frontend->backend: PATCH /X
+
+note right
+  Configure X.
+  X represents configure house, actuator or deactivate device
+end note
+
+backend-->frontend: 200 - OK  + body
+
+[o<-- frontend: X configured
+
+
+
+@enduml

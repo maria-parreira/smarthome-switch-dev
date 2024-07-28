@@ -1,0 +1,85 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+
+title <font color=#800020>UC3: List of all existing rooms in House</font>
+
+autonumber
+participant ":GetListOfRoomsController"
+participant ":HouseMapper"
+participant "houseID:HouseID"
+participant ":ServiceRoom"
+participant ":IRepositoryRoom"
+participant ":Room"
+participant ":HouseId"
+participant ":RoomMapper"
+
+note left of ":GetListOfRoomsController"
+   houseDTO derive from GetListOfHousesController
+end note
+
+[o-> ":GetListOfRoomsController" : getRooms(houseID)
+activate ":GetListOfRoomsController"
+
+":GetListOfRoomsController"->":HouseMapper" : DTOtoHouseId(houseID)
+activate ":HouseMapper"
+
+":HouseMapper" -> "houseID:HouseID" ** : HouseId(houseId)
+activate "houseID:HouseID"
+
+"houseID:HouseID" --> ":HouseMapper" : houseID
+deactivate "houseID:HouseID"
+
+":HouseMapper"-->":GetListOfRoomsController" : houseID
+deactivate ":HouseMapper"
+
+":GetListOfRoomsController" -> ":ServiceRoom" : getRooms(houseID)
+activate ":ServiceRoom"
+
+":ServiceRoom"-> ":IRepositoryRoom" : getRoomsInHouse(houseID)
+activate ":IRepositoryRoom"
+
+":IRepositoryRoom" -> ":IRepositoryRoom" : findAll()
+
+":IRepositoryRoom" --> ":IRepositoryRoom" : allRooms
+
+
+loop room : allRooms
+
+    ":IRepositoryRoom"->":Room": getHouseId()
+    activate ":Room"
+    ":Room"--> ":IRepositoryRoom" : roomHouseId
+    deactivate ":Room"
+    ":IRepositoryRoom" -> ":HouseId" : equals(houseID)
+    activate ":HouseId"
+    ":HouseId" --> ":IRepositoryRoom" : true
+
+    note left of ":IRepositoryRoom"
+        If it returns false (13), the room
+        is not added to the list.
+    end note
+
+    deactivate ":HouseId"
+    ":IRepositoryRoom"->":IRepositoryRoom" : roomsInHouse.add(room)
+end
+
+
+":IRepositoryRoom"-->":ServiceRoom" : roomsInHouse
+deactivate ":IRepositoryRoom"
+
+":ServiceRoom"-->":GetListOfRoomsController" : roomsInHouse
+deactivate ":ServiceRoom"
+
+loop for each room in roomsInHouse
+
+":GetListOfRoomsController" -> ":RoomMapper" : roomsListToDTO(roomsInHouse)
+activate ":RoomMapper"
+
+":RoomMapper" --> ":GetListOfRoomsController" : roomsDTO
+deactivate ":RoomMapper"
+
+end
+[o<--":GetListOfRoomsController" : roomsDTO
+deactivate ":GetListOfRoomsController"
+
+@enduml

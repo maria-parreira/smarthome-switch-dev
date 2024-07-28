@@ -1,0 +1,21 @@
+@startuml
+'https://plantuml.com/use-case-diagram
+
+left to right direction
+
+Actor Administrator as admin
+Actor PowerUser as pw
+Actor RoomOwner as ro
+usecase "UC06: Access list of devices" as UC6
+usecase "Get list of readings" as UC105
+usecase "UC33: Get readings of device within Period" as UC33
+
+UC33 --> UC105 #line.dashed : <<includes>>
+UC105 --> UC6 #line.dashed : <<includes>>
+
+
+ro --> UC33
+admin --> UC33
+pw --> UC33
+
+@enduml

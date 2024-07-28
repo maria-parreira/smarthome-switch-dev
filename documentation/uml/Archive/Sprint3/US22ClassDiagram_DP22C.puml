@@ -1,0 +1,34 @@
+@startuml DP22C_Class_Diagram
+
+class DP22C {
+    - _sensorType: SensorType
+    - _data: Map <Integer, Double>
+    - _value: DP22CValue
+
+    + DP22C(sensorCatalogue: SensorCatalogue)
+    + getSensorType(): SensorType
+    + getValue(): Value
+    + setValue(Integer keyReading): void
+    + setData(): Map <Integer, Double>
+}
+
+interface Sensor {
+    + getSensorType(): SensorType
+}
+
+interface Value {
+}
+
+class DP22CValue {
+    - _temperatureValue: Double
+    - areConstructorArgumentsValid(Double value) : boolean
+    + DP22CValue(Double value)
+    + toString(): String
+}
+
+
+DP22C ..|> Sensor : implements
+DP22C -- DP22CValue : uses >
+DP22CValue ..|> Value : implements
+
+@enduml

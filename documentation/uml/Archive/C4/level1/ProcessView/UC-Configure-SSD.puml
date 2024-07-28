@@ -1,0 +1,19 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+participant "<<system>> \nSmartHome" as SmartHome
+
+[o-> SmartHome: PATCH /X
+
+note right
+  Configure X.
+  X represents configure house, actuator or deactivate device
+end note
+
+
+[o<-- SmartHome: 200 - OK  + body
+
+
+@enduml

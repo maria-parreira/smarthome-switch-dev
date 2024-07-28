@@ -1,0 +1,68 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+
+title US03: As an Administrator, I want to have a list of existing rooms.
+
+
+autonumber
+participant ":US03GetRoomsController"
+participant ":RoomMapper"
+participant ":HouseDTO"
+participant ":RepositoryRoom"
+participant ":Room"
+participant ":HouseId"
+
+note left of ":US03GetRoomsController"
+   houseDTO derive from GetHousesController
+end note
+
+[o-> ":US03GetRoomsController" : listRoomsInHouse(houseDTO)
+activate ":US03GetRoomsController"
+":US03GetRoomsController"->":RoomMapper" : DTOToHouseId(houseDTO.getId())
+activate ":RoomMapper"
+":RoomMapper" -> ":HouseDTO" : getId()
+activate ":HouseDTO"
+":HouseDTO" --> ":RoomMapper" : houseId
+deactivate ":HouseDTO"
+":RoomMapper"-->":US03GetRoomsController" : houseId
+deactivate ":RoomMapper"
+
+":US03GetRoomsController"->":RepositoryRoom" : getRoomsInHouse(houseId)
+activate ":RepositoryRoom"
+":RepositoryRoom"->":RepositoryRoom" : findAll()
+
+
+":RepositoryRoom"-->":RepositoryRoom" : allRooms
+
+
+loop room : allRooms
+
+    ":RepositoryRoom"->":Room": getHouseId()
+    activate ":Room"
+    ":Room"-->":RepositoryRoom" : roomHouseId
+    deactivate ":Room"
+    ":RepositoryRoom" -> ":HouseId" : equals(houseId)
+    activate ":HouseId"
+    ":HouseId" --> ":RepositoryRoom" : true
+
+    note left of ":RepositoryRoom"
+        If it returns false (12), the room
+        is not added to the list.
+    end note
+
+    deactivate ":HouseId"
+    ":RepositoryRoom"->":RepositoryRoom" : roomsInHouse.add(room)
+end
+":RepositoryRoom"-->":US03GetRoomsController" : roomsInHouse
+deactivate ":RepositoryRoom"
+
+":US03GetRoomsController" -> ":RoomMapper" : roomsListToDTO(roomsInHouse)
+
+activate ":RoomMapper"
+":RoomMapper" --> ":US03GetRoomsController" : roomsDTO
+deactivate ":RoomMapper"
+[o<--":US03GetRoomsController" : roomsDTO
+deactivate ":US03GetRoomsController"
+
+@enduml

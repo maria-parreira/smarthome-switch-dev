@@ -1,0 +1,10 @@
+.reactive-button {
+    border-radius: 20px;
+    color: white;
+}
+
+.reactive-button:hover {
+    transition: background-color 0.5s ease; /* transition effect */
+    background: #0097ff;
+}
+

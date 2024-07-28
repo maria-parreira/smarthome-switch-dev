@@ -1,0 +1,88 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+
+ONF01A "1" -- "1" ONF01AValue : uses >
+ONF01A "1" -- "1" DeviceId : contains >
+ONF01A "1" -- "1" ActuatorModelID : contains >
+ONF01A "1" -- "1" ActuatorID : contains >
+ActuatorID "1" ..|> "1" DomainID : implements >
+ONF01A "1" ..|> "1" "Actuator " : implements >
+ONF01A "1" ..|> "1" AggregateRoot : implements >
+ONF01AValue "1" ..|> "1" ValueObject : implements >
+ONF01AValue "1" ..|> "1" Value : implements >
+
+
+interface "Actuator "{
+}
+
+
+
++class ONF01A {
+-actuatorValue:ONF01AValue
+-actuatorID: ActuatorID
+-deviceID: DeviceID
+-actuatorModelID : ActuatorModelID
++ ONF01A (actuatorValue: ActuatorValue, actuatorID: ActuatorID, deviceID: DeviceId, actuatorModelID: ActuatorModelID): ONF01A
++ identity() : ActuatorID
++ sameAs(object : Object) : boolean
++ equals(object : Object) : boolean
++ setValue() : ActuatorValue
+}
+
+class ONF01A
+
++class ONF01AValue {
+- _actuatorValue: String
++ ONF01AValue (actuatorValue): ONF01AValue
+- areConstructorArgumentsValid(value) : boolean
++ toString() : String
+}
+
+
++interface Value {
++ getValue() : Value
+}
+
+
++class ActuatorID {
+- actuatorID: String
++ ActuatorID (actuatorID): ActuatorID
+- isActuatorValid (): boolean
++ equals(object : Object) : boolean
++ toString() : String
+}
+
+class DeviceId{
+- _id: String
++ DeviceId(String id): DeviceId
++ equals (object : Object): boolean
++ hashCode(): int
++ toString(): String
+}
+
+class ActuatorModelID{
+- _id: String
++ ActuatorModelID(String id): ActuatorModelID
++ equals (object : Object): boolean
++ toString(): String
+}
+
++interface DomainID{
+}
+
++interface AggregateRoot{
+}
+
++interface ValueObject{
+}
+
+
+
+
+
+
+
+
+
+@enduml

@@ -1,0 +1,20 @@
+@startuml
+'https://plantuml.com/component-diagram
+
+
+component "<<system>> \n Smart Home" {
+component "<<container>> \n Backend"{
+port port2
+
+}
+port port1
+
+}
+
+"REST API" -- port1
+
+port1 -- port2
+
+
+
+@enduml

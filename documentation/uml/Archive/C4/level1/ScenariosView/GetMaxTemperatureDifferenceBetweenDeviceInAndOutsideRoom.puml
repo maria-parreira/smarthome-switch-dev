@@ -1,0 +1,30 @@
+@startuml
+'https://plantuml.com/use-case-diagram
+
+left to right direction
+
+
+
+Actor Administrator as admin
+Actor PowerUser as pw
+Actor RoomOwner as ro
+
+
+
+
+usecase "UC06: Access list of devices" as UC6
+usecase "UC34: Get the maximum instantaneous temperature difference between a device of inside and outside room" as UC34
+usecase "Get list of readings" as UC105
+usecase "Get list of sensors" as UC106
+
+
+UC34 --> UC105 #line.dashed : <<includes>>
+UC105 --> UC106 #line.dashed : <<includes>>
+UC106 --> UC6 #line.dashed : <<includes>>
+
+ro --> UC34
+admin --> UC34
+pw --> UC34
+
+
+@enduml

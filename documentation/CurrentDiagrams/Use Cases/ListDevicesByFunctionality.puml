@@ -1,0 +1,14 @@
+@startuml
+'https://plantuml.com/use-case-diagram
+
+left to right direction
+
+Actor Administrator as admin
+
+
+usecase "UC09: List devices by functionality" as UC9
+
+
+admin --> UC9
+
+@enduml

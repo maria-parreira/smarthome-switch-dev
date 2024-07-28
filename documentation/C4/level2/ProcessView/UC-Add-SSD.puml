@@ -1,0 +1,29 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+box "  <<system>> \n SmartHome"
+    participant " <<container>> \n :Frontend" as frontend
+    participant " <<container>> \n :Backend" as backend
+    participant " <<container>> \n :WeatherService" as ws
+end box
+
+
+
+[o-> frontend: Add X
+
+frontend->backend: POST /X
+
+note right
+  Add X.
+  X can represent room, device, sensor, sensor type or actuator
+end note
+
+backend-->frontend: 201 - CREATED + body
+
+[o<-- frontend: X Added
+
+
+
+@enduml

@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+
+  db:
+    image: mariadb
+    container_name: my_database
+    ports:
+      - "3306:3306"
+    environment:
+      MARIADB_ROOT_PASSWORD: 123
+      MARIADB_DATABASE: smarthomedb
+      MARIADB_USER: user
+      MARIADB_PASSWORD: 123
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "healthcheck.sh",
+          "--su-mysql",
+          "--connect",
+          "--innodb_initialized"
+        ]
+      timeout: 10s
+
+  adminer:
+    image: adminer
+    container_name: my_adminer
+    ports:
+      - "8282:8080"
+
+  smarthome_be:
+    build:
+      context: .
+      dockerfile: Dockerfile-be
+    container_name: smarthome_be
+
+    environment:
+        SPRING_DATASOURCE_URL: jdbc:mariadb://db:3306/smarthomedb
+        SPRING_DATASOURCE_USERNAME: user
+        SPRING_DATASOURCE_PASSWORD: 123
+        SPRING_JPA_HIBERNATE_DDL_AUTO: create
+        SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.mariadb.jdbc.Driver
+        SPRING_PROFILES_ACTIVE: dev
+    ports:
+      - "8080:8080"
+    depends_on:
+        db:
+            condition: service_healthy
+
+  smarthome_fe:
+    build:
+      context: .
+      dockerfile: Dockerfile-fe
+    container_name: smarthome_fe
+    ports:
+      - "80:80"
+    depends_on:
+      - smarthome_be
+
+volumes:
+  db_data:
+

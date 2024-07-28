@@ -1,0 +1,120 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title <font color=#800020>UC5: Add a new device to a room</font>
+
+autonumber
+
+participant ":AddNewDeviceToRoomController"
+participant ":ServiceDevice"
+participant ":IRepositoryDevice"
+participant "device:Device"
+participant ":DeviceMapper"
+participant "roomId :RoomId"
+participant "deviceName :DeviceName"
+participant "activationStatus :ActivationStatus"
+participant ":ImplFactoryDevice"
+
+
+[o-> ":AddNewDeviceToRoomController" : addNewDeviceToRoom(deviceDTO)
+activate ":AddNewDeviceToRoomController"
+deactivate ":ServiceDevice"
+deactivate ":IRepositoryDevice"
+deactivate "device :Device"
+
+":AddNewDeviceToRoomController" -> ":DeviceMapper" : DTOToDeviceId(deviceDTO.getDeviceId)
+activate ":DeviceMapper"
+
+":DeviceMapper" -> "deviceId :DeviceId" ** : DeviceId(deviceId)
+activate "deviceId :DeviceId"
+
+"deviceId :DeviceId" --> ":DeviceMapper" : deviceId
+deactivate "deviceId :DeviceId"
+
+":DeviceMapper" --> ":AddNewDeviceToRoomController"  : deviceId
+deactivate ":DeviceMapper"
+
+":AddNewDeviceToRoomController"  -> ":DeviceMapper" : DTOToRoomId(deviceDTO.getRoomId)
+activate ":DeviceMapper"
+
+":DeviceMapper" -> "roomId :RoomId" ** : RoomId(roomId)
+activate "roomId :RoomId"
+
+"roomId :RoomId" --> ":DeviceMapper" : roomId
+deactivate "roomId :RoomId"
+
+":DeviceMapper" --> ":AddNewDeviceToRoomController"  : roomId
+deactivate ":DeviceMapper"
+
+":AddNewDeviceToRoomController" -> ":DeviceMapper" : DTOToDeviceName(deviceDTO.getDeviceName)
+activate ":DeviceMapper"
+
+":DeviceMapper" -> "deviceName :DeviceName" ** : DeviceName(deviceName)
+activate "deviceName :DeviceName"
+
+"deviceName :DeviceName" --> ":DeviceMapper" : deviceName
+deactivate "deviceName :DeviceName"
+
+":DeviceMapper" --> ":AddNewDeviceToRoomController"  : deviceName
+deactivate ":DeviceMapper"
+
+":AddNewDeviceToRoomController"  -> ":DeviceMapper" : DTOToDeviceModel(deviceDTO.getDeviceModel)
+activate ":DeviceMapper"
+
+":DeviceMapper" -> "deviceModel :DeviceModel" ** : DeviceModel(deviceModel)
+activate "deviceModel :DeviceModel"
+
+"deviceModel :DeviceModel" --> ":DeviceMapper" : deviceModel
+deactivate "deviceModel :DeviceModel"
+
+":DeviceMapper" --> ":AddNewDeviceToRoomController"  : deviceModel
+deactivate ":DeviceMapper"
+
+":AddNewDeviceToRoomController"  -> ":DeviceMapper" : DTOToActivationStatus(deviceDTO.getActivationStatus)
+activate ":DeviceMapper"
+
+":DeviceMapper" -> "activationStatus :ActivationStatus" ** : ActivationStatus(activationStatus)
+activate "activationStatus :ActivationStatus"
+
+"activationStatus :ActivationStatus" --> ":DeviceMapper" : activationStatus
+deactivate "activationStatus :ActivationStatus"
+
+":DeviceMapper" --> ":AddNewDeviceToRoomController"  : activationStatus
+deactivate ":DeviceMapper"
+
+":AddNewDeviceToRoomController" -> ":ServiceDevice" : addNewDevice(deviceId, roomId, deviceName, deviceModel, activationStatus)
+activate ":ServiceDevice"
+activate ":ServiceDevice"
+
+":ServiceDevice" -> ":ImplFactoryDevice" : createDevice(deviceId, roomId, deviceName, deviceModel, activationStatus)
+activate ":ImplFactoryDevice"
+
+":ImplFactoryDevice" -> "device :Device" ** : Device(deviceId, roomId, deviceName, deviceModel, activationStatus)
+activate "device :Device"
+
+"device :Device" --> ":ImplFactoryDevice" : device
+deactivate "device :Device"
+
+":ImplFactoryDevice" --> ":ServiceDevice" : device
+deactivate ":ImplFactoryDevice"
+
+":ServiceDevice" -> ":IRepositoryDevice" : save(device)
+note left: If the device already exists, an exception will be thrown.
+activate ":IRepositoryDevice"
+
+":IRepositoryDevice" --> ":ServiceDevice" : device
+deactivate ":IRepositoryDevice"
+
+":ServiceDevice" --> ":AddNewDeviceToRoomController"  : device
+deactivate ":ServiceDevice"
+
+":AddNewDeviceToRoomController" -> ":DeviceMapper" : domainToDTO(device)
+activate ":DeviceMapper"
+
+":DeviceMapper" --> ":AddNewDeviceToRoomController"  : deviceDTO
+deactivate ":DeviceMapper"
+
+[o<-- ":AddNewDeviceToRoomController" : deviceDTO
+deactivate ":AddNewDeviceToRoomController"
+
+@enduml

@@ -1,0 +1,22 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+box "  <<system>> \n SmartHome"
+    participant " <<container>> \n :Backend" as backend
+end box
+
+[o-> backend: GET /X
+
+note right
+  Get list of X.
+  X can represent rooms, devices,
+  sensors, actuators or sensor readings
+end note
+
+[o<-- backend: 200 - OK + body
+
+
+
+@enduml

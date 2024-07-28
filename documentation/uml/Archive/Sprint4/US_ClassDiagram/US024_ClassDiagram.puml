@@ -1,0 +1,85 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+Sensor_ValueLocalTime --|> Sensor : extends >
+PC500W ..|> Sensor_ValueLocalTime : implements >
+PC500W ..|> AggregateRoot : implements >
+PC500WValue ..|> ValueObject : implements >
+PC500WValue ..|> Value : implements >
+PC500W -- PC500WValue : uses >
+
+PC500W -- SensorModelID : uses >
+PC500W -- DeviceID : knows >
+
+DeviceID ..|> ValueObject : implements >
+SensorModelID ..|> DomainID : implements >
+DeviceID ..|> DomainID : implements >
+SensorModelID ..|> ValueObject : implements >
+
+
+
+interface DomainID{
+}
+
+interface ValueObject{
+}
+
+interface Sensor{
+}
+
+interface Sensor_ValueLocalTime{
++ getValue(LocalTime dateTime)
+}
+
+interface AggregateRoot{
+}
+
+interface Value{
+}
+
+class PC500W{
+- pc500WValue: PC500WValue
+- deviceID: DeviceID
+- sensorModelID: SensorModelID
+- sensorID: SensorID
+- readings: Map <LocalTime, Double>
+
++ PC500W(deviceID, sensorModelID, sensorID): PC500W
++ setData(): Map <LocalTime, Double>
++ getValue (LocalTime dateTime): Double
++ sameAs (object: Object): boolean
++ equals (object: Object): boolean
+}
+
+
+class PC500WValue {
+
+- powerConsumptionValue: Double
++ PC500WValue (value): PC500WValue
++ equals (object: Object): boolean
++ toString(): String
+}
+
+class DeviceId{
+- _id: String
+# DeviceId(id: String): DeviceId
++ equals (object: Object): boolean
++ hashCode(): int
++ toString(): String
+}
+
+class SensorModelId{
+- _id: String
+# SensorModelId(id: String): SensorModelId
++ equals (object: Object): boolean
++ toString(): String
+}
+
+class SensorId{
+- _id: String
+# SensorId(id: String): SensorId
++ equals (object: Object): boolean
++ toString(): String
+}
+
+@enduml

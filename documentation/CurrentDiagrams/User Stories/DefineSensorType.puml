@@ -1,0 +1,86 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title <font color=#800020> UC4: Define a Sensor Type</font>
+
+autonumber
+
+participant ":DefineSensorTypeController"
+participant ":SensorTypeMapper"
+participant "description :Description"
+participant "unit :Unit"
+participant "sensorTypeID :SensorTypeID"
+participant ":SensorTypeService"
+participant ":ImplFactorySensorType"
+participant "sensorType :SensorType"
+participant ":IRepositorySensorType"
+
+[o-> ":DefineSensorTypeController" : defineSensorType(sensorTypeDTO)
+activate ":DefineSensorTypeController"
+
+":DefineSensorTypeController" -> ":SensorTypeMapper" : createDescription(sensorTypeDTO.getDescription())
+activate ":SensorTypeMapper"
+
+":SensorTypeMapper" -> "description :Description" : Description(sensorTypeDTO.getDescription())
+activate "description :Description"
+
+"description :Description" --> ":SensorTypeMapper" : description
+deactivate "description :Description"
+
+":DefineSensorTypeController" <-- ":SensorTypeMapper" : description
+":DefineSensorTypeController" -> ":SensorTypeMapper" : createUnit(sensorType.getUnit())
+":SensorTypeMapper" -> "unit :Unit" : Unit(sensorType.getUnit())
+activate "unit :Unit"
+"unit :Unit" --> ":SensorTypeMapper" : unit
+deactivate "unit :Unit"
+
+":DefineSensorTypeController" <-- ":SensorTypeMapper" : unit
+":DefineSensorTypeController" -> ":SensorTypeMapper" : createSensorTypeID(sensorTypeDTO.getSensorTypeID())
+":SensorTypeMapper" -> "sensorTypeID :SensorTypeID"** : SensorTypeID(sensorTypeDTO.getSensorTypeID())
+activate "sensorTypeID :SensorTypeID"
+
+"sensorTypeID :SensorTypeID" --> ":SensorTypeMapper" : sensorTypeID
+deactivate "sensorTypeID :SensorTypeID"
+
+":DefineSensorTypeController" <-- ":SensorTypeMapper" : sensorTypeID
+deactivate ":SensorTypeMapper"
+
+note left
+Assuming that a verification of
+duplicate SensorTypeID was already done
+in other controller
+end note
+
+":DefineSensorTypeController" -> ":SensorTypeService" : sensorTypeService.createSensorType(sensorTypeID, description, unit)
+activate ":SensorTypeService"
+":SensorTypeService" -> ":ImplFactorySensorType" : createSensorType(sensorTypeID, description, unit)
+activate ":ImplFactorySensorType"
+":ImplFactorySensorType" -> "sensorType :SensorType" : SensorType(sensorTypeID, description, unit)
+activate "sensorType :SensorType"
+
+"sensorType :SensorType" --> ":ImplFactorySensorType" : sensorType
+deactivate "sensorType :SensorType"
+
+":ImplFactorySensorType" --> ":SensorTypeService" : sensorType
+deactivate ":ImplFactorySensorType"
+
+":SensorTypeService" -> ":IRepositorySensorType" : save(sensorType)
+activate ":IRepositorySensorType"
+
+":IRepositorySensorType" --> ":SensorTypeService" : sensorType
+deactivate ":IRepositorySensorType"
+
+":SensorTypeService" --> ":DefineSensorTypeController" : sensorType
+deactivate ":SensorTypeService"
+
+":DefineSensorTypeController" -> ":SensorTypeMapper" : DomainToDTO(sensorType)
+activate ":SensorTypeMapper"
+
+":DefineSensorTypeController" <-- ":SensorTypeMapper" : sensorTypeDTO
+deactivate ":SensorTypeMapper"
+
+[o<-- ":DefineSensorTypeController" : sensorTypeDTO
+
+deactivate ":DefineSensorTypeController"
+
+@enduml

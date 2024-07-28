@@ -1,0 +1,125 @@
+.attribute-card {
+    background: white;
+    border-radius: 15px;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 10px ;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    color: darkgrey;
+    font-size: 14px;
+}
+
+.attributes {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.attribute {
+    text-align: left;
+    padding-left: 30px;
+    width: 80%;
+    margin: 5px 0;
+}
+
+.toggle {
+    display: flex;
+    align-items: center;
+}
+
+.toggle span {
+    margin-right: 10px;
+}
+
+.buttons{
+    width: 20%;
+    justify-content: flex-end; /* Alinha a caixa à esquerda */
+    gap: 10px; /* Espaço entre os botões */
+    margin-left: 20px; /* Adiciona espaço acima da div dos botões */
+}
+
+.spacer {
+    display: flex; /* Adiciona espaço abaixo da div dos atributos */
+}
+
+.attribute-card-sensor-actuator {
+    background: white;
+    display: inline-list-item;
+    justify-content: space-between;
+    align-items: center;
+    color: darkgrey;
+    font-size: 14px;
+}
+
+.attribute-card-sensor-actuator ul {
+    list-style-type: none;
+    padding: 10px;
+    margin: 10px;
+}
+
+@media (max-width: 568px) {
+
+    .attribute-card {
+        background: white;
+        border-radius: 15px;
+        padding: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin: 10px 0;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        color: darkgrey;
+        font-size: 14px;
+    }
+
+    .attributes {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .attribute {
+        text-align: left;
+        width: 80%;
+        padding-left: 2px;
+    }
+    .buttons{
+        display: flex;
+        width: 20%;
+        gap: 10px; /* Espaço entre os botões */
+        margin-left: 20px; /* Adiciona espaço acima da div dos botões */
+    }
+
+    .attribute-card-sensor-actuator ul {
+        padding:5px;
+        margin: 5px;
+    }
+    .table-container {
+        padding:10px;
+    }
+
+}
+
+
+@media (max-width: 568px) {
+
+    .attribute-card {
+        background: white;
+        text-align: left;
+        border-radius: 15px;
+        padding: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        color: darkgrey;
+        font-size: 14px;
+    }
+
+}

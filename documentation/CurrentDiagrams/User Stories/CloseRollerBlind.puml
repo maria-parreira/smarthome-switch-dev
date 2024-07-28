@@ -1,0 +1,75 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+title US37: As a Room Owner [or Power User, or Administrator] I want to close a blind roller that is in a room.
+
+[o-> ":ActuatorControllerWeb"++: closeRollerBlind(OPNCLEntryDTO entryDTO)
+
+
+":ActuatorControllerWeb" -> ":SensorMapper" ++: DTOToSensorID(entryDTO.getSensorID)
+
+note left
+For this use case, it is assumed
+that the user has chosen
+both the sensor and the actuator
+to be used, by accessing all sensors
+and actuators within a device.
+end note
+
+":SensorMapper" -> "sensorID: SensorID" ** : SensorID (entryDTO.getSensorID)
+activate "sensorID: SensorID"
+"sensorID: SensorID" --> ":SensorMapper" -- : sensorID
+":SensorMapper" -> ":ActuatorControllerWeb" -- : sensorID
+
+":ActuatorControllerWeb" -> ":ActuatorMapper" ++: DTOToActuatorID(actuatorDTO.getActuatorID)
+":ActuatorMapper" -> "actuatorID: ActuatorID" ** : ActuatorID (actuatorDTO.getActuatorID)
+activate "actuatorID: ActuatorID"
+"actuatorID: ActuatorID" --> ":ActuatorMapper" -- : actuatorID
+":ActuatorMapper" -> ":ActuatorControllerWeb" -- : actuatorID
+
+":ActuatorControllerWeb" -> ":ServiceActuator" ++ : getActuator(actuatorID)
+":ServiceActuator" -> ":IRepositoryActuator" ++ : ofIdentity(actuatorID)
+":IRepositoryActuator" --> ":ServiceActuator" -- : actuatorOpt
+":ServiceActuator" -> ":ServiceActuator" : actuatorOpt.get()
+'":ServiceActuator" -> ":ServiceActuator" : isOPNCLO100actuator(actuator)
+":ServiceActuator" --> ":ActuatorControllerWeb" -- : actuator
+
+":ActuatorControllerWeb" -> ":ServiceSensor" ++ : getSensor(sensorID)
+":ServiceSensor" -> ":IRepositorySensor" ++ : ofIdentity(sensorID)
+":IRepositorySensor" --> ":ServiceSensor" -- : sensorOpt
+":ServiceSensor" -> ":ServiceSensor" : sensorOpt.get()
+
+'":ServiceSensor" -> ":ServiceSensor" : isCAP200sensor(sensor)
+":ServiceSensor" --> ":ActuatorControllerWeb" -- : sensor
+
+":ActuatorControllerWeb" -> ":ServiceActuator" ++ : areInSameDeviceWithValidModels(actuator, sensor)
+":ServiceActuator" -> ":ServiceActuator" : isCAP200sensor(sensor)
+":ServiceActuator" -> ":ServiceActuator" : isOPNCL0100(actuator)
+":ServiceActuator" --> ":ActuatorControllerWeb" -- : true
+
+":ActuatorControllerWeb" -> ":ActuatorMapper" ++ : convertToValue(entryDTO.getActuatorValue, actuator.getModelName.toString())
+":ActuatorMapper" --> ":ActuatorControllerWeb" -- : actuatorValue
+
+":ActuatorControllerWeb" -> ":ServiceSensorReading" ++ : getLatestReading(sensorID)
+":ServiceSensorReading" -> ":IRepositorySensorReading" ++ : getLatestReading(sensorID)
+":IRepositorySensorReading" --> ":ServiceSensorReading" -- : latestReading
+":ServiceSensorReading" --> ":ActuatorControllerWeb" -- : latestReading
+'":ActuatorControllerWeb" -> ":ActuatorControllerWeb" : isPercentageValidToClose (actuatorValue, latestReading.parseInt())
+
+":ActuatorControllerWeb" -> ":ServiceActuator" ++ : closeRollerBlind(actuator, actuatorValue.getValue(), latestReading)
+":ServiceActuator" -> ":ServiceActuator" : canRollerBlindBeClosed(actuatorValue.getValue(), latestReading)
+":ServiceActuator" -> "actuator : OPNCL0100" ++ : setValue(actuatorValue)
+"actuator : OPNCL0100" --> ":ServiceActuator" -- : actuatorValue
+":ServiceActuator" -> ":IRepositoryActuator" ++ : update(actuator)
+":IRepositoryActuator" --> ":ServiceActuator" -- : actuator
+":ServiceActuator" --> ":ActuatorControllerWeb" -- : actuator
+
+
+":ActuatorControllerWeb" -> ":ActuatorMapper" ++ : convertToActuatorWebDTO(actuator.identity(), actuator.getDeviceID(), actuator.getActuatorModelID(), actuator.getValue())
+":ActuatorMapper" --> ":ActuatorControllerWeb" -- : actuatorWebDTO
+[o<-- ":ActuatorControllerWeb" -- : actuatorWebDTO
+
+
+@enduml

@@ -1,0 +1,12 @@
+@startuml
+'https://plantuml.com/use-case-diagram
+
+left to right direction
+
+Actor Administrator as admin
+
+usecase "UC04: Add sensor type" as UC4
+
+admin --> UC4
+
+@enduml

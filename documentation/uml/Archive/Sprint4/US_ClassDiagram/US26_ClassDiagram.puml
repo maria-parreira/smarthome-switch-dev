@@ -1,0 +1,101 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+Sensor_ValueTwoLocalTimes --|> Sensor : extends >
+ECA300K ..|> Sensor_ValueTwoLocalTimes : implements >
+ECA300K ..|> AggregateRoot : implements >
+ECA300KValue ..|> ValueObject : implements >
+ECA300KValue ..|> Value : implements >
+ECA300K -- ECA300KValue : uses >
+ECA300K -- SensorModelId : contains >
+ECA300K -- SensorId : contains >
+ECA300K -- DeviceId : contains >
+AggregateRoot --|> DomainEntity : extends >
+DeviceId ..|> DomainId : implements >
+SensorId ..|> DomainId : implements >
+SensorModelId ..|> DomainId : implements >
+DomainId --|> ValueObject : extends >
+
+interface DomainEntity{
+}
+
+interface ValueObject{
+}
+
+interface DomainId {
+}
+
+interface Sensor{
+}
+
+
+interface AggregateRoot{
+}
+
+interface Value{
+}
+
+interface Sensor_ValueTwoLocalTimes{
++ getValue(LocalTime start,LocalTime end)
+}
+
+interface AggregateRoot{
+}
+
+interface Value{
+}
+
+class ECA300K{
+- ECA300KValue: ECA300KValue
+- deviceId: DeviceId
+- sensorModelId: SensorModelId
+- sensorId: SensorId
+- readings: Map <LocalTime, Double>
+
++ ECA300K(deviceId,sensorModelId, sensorId):
+- areConstructorArgumentsValid (): boolean
+- readingsWithinPeriod(start LocalTime , end LocalTime ): List<Double>
+- energyConsumption(LocalTime start, LocalTime end): ECA300KValue
+- setData(): Map <LocalTime, Double>
++ getValue(LocalTime startTime, LocalTime endTime): ECA300KValue
++ identity(): SensorId
++ getDeviceID(): deviceID
++ getSensorModelID(): sensorModelID
++ sameAs (object): boolean
++ equals (object): boolean
+}
+
+
+class ECA300KValue {
+- _energyConsumption: Double
+
++ ECA300KValue(Double value): ECA300KValue
++ toString(): String
+
+}
+
+class DeviceId{
+- _id: String
++ DeviceId(String id): DeviceId
++ equals (Object object): boolean
++ hashCode(): int
++ toString(): String
+}
+
+class SensorModelId{
+- _id: String
+# SensorModelId(String id): SensorModelId
++ equals (Object object): boolean
++ toString(): String
+}
+
+class SensorId{
+- _id: String
+# SensorId(String id): SensorId
++ equals (Object object): boolean
++ toString(): String
+}
+
+
+
+@enduml

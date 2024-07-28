@@ -1,0 +1,18 @@
+@startuml
+'https://plantuml.com/use-case-diagram
+
+'left to right direction
+
+Actor Administrator as admin
+Actor PowerUser as pw
+Actor RoomOwner as ro
+
+usecase "UC45: Know blind roller's current position" as UC45
+
+
+admin --> UC45
+pw --> UC45
+ro --> UC45
+
+
+@enduml

@@ -1,0 +1,86 @@
+@startuml
+'https://plantuml.com/class-diagram
+'left to right direction
+
+
+House "1" -- "*" Room : access >
+Room "1" -- "*" Device : access >
+Device "1" -- "*" Actuator : has >
+Device "*"--"1" ActuatorCatalogue : uses >
+ActuatorCatalogue "1"--"*" Actuator : <creates>
+US12AddActuatorToDeviceController "1"--"1" House : uses >
+US12AddActuatorToDeviceController "1"--"1" ActuatorCatalogue : uses >
+US12AddActuatorToDeviceController ... ActuatorMapper : uses >
+US12AddActuatorToDeviceController ... ActuatorDTO : uses >
+US12AddActuatorToDeviceController ... AddActuatorToDeviceDTO : uses >
+
+
+class US12AddActuatorToDeviceController {
+    -_house : House
+    -_actuatorCatalogue : ActuatorCatalogue
+    + US12AddActuatorToDeviceController(house, actuatorCatalogue) ActuatorDTO
+    + isValidConstructorArguments(house, actuatorCatalogue) boolean
+    + getActuatorModels() List<String>
+    + addActuatorToDevice(entryDTO) ActuatorDTO
+}
+
+class House{
+    -_factoryLocation : FactoryLocation
+    -_factoryRoom : FactoryRoom
+    -_location : Location
+    -_rooms : List <Room>
+    + getRoomByName(name) Room
+}
+
+class Room {
+    -_roomName : String
+    -_floorNumber : Integer
+    -_area : Double
+    -_height : Double
+    -_factoryDevice : FactoryDevice
+    -_devices : List <Device>
+    + getDeviceByName(name) Device
+}
+
+
+ class Device {
+     -_deviceName : String
+     -_isActive : Boolean
+     -_sensors : ArrayList <Sensor>
+     -_actuators : ArrayList <Actuator>
+     + getDeviceIsActive() boolean
+     + addActuator(strModel, catalogue) Actuator
+ }
+
+ class ActuatorCatalogue {
+     -_listActuatorTypes : List <ActuatorType>
+     -_listStringClassesActuators : List <String>
+     -_factoryActuatorType : FactoryActuatorType
+     + getActuator(strModel) Actuator
+
+ }
+
+ Interface Actuator {
+     + setValue(value) Value
+     + getActuatorType() ActuatorType
+ }
+
+ class ActuatorMapper {
+    + convertToDTO(actuator) ActuatorDTO
+ }
+
+ class ActuatorDTO {
+     -_deviceName : String
+     -_roomName : String
+     -_strActuatorModel : String
+ }
+
+
+ class AddActuatorToDeviceDTO{
+      -_strDescription : String
+      -_unit : String
+      + ActuatorDTO(strDescription, unit) ActuatorDTO
+ }
+
+
+@enduml

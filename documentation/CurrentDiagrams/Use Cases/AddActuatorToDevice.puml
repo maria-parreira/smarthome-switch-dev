@@ -1,0 +1,19 @@
+@startuml
+'https://plantuml.com/use-case-diagram
+
+left to right direction
+
+Actor Administrator as admin
+
+usecase "UC12: Add actuator to device" as UC12
+usecase "Get list of active devices" as UC100
+usecase "Get list of actuator types" as UC101
+usecase "Get list of actuator models" as UC102
+
+UC102 --> UC101 #line.dashed : <<includes>>
+UC12 --> UC100 #line.dashed
+UC12 --> UC102 #line.dashed
+
+admin --> UC12
+
+@enduml

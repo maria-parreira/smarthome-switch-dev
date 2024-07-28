@@ -1,0 +1,42 @@
+@startuml
+'https://plantuml.com/deployment-diagram
+
+
+node "server1:?" #lightblue{
+    node "WeatherService:8080" as WS #lightgrey{
+        component "<<container>> \n  WeatherService"
+    }
+}
+
+node "localhost:?" as LH #lightblue{
+    component "<<component>> \n Browser" as browser{
+        component "<<component>> \n React App"
+    }
+
+}
+
+
+node "docker:?" as docker #lightblue{
+    node "SH_FE:80" as SH_FE #lightgrey{
+            component "<<container>> \n HTTP Server"
+            folder "<<artifact>> \n React App" {
+            }
+        }
+        node "SH_BE:8080" as SH_BE #lightgrey{
+            component "<<container>> \n  SmartHome"
+        }
+        node "DB:3306" as DB #lightgrey{
+            component "<<container>> \n  Database"
+        }
+        }
+
+
+WS -- SH_BE : http/s
+
+SH_BE -- DB
+SH_FE -- browser
+SH_BE -- browser
+
+
+
+@enduml

@@ -1,0 +1,62 @@
+@startuml
+'https://plantuml.com/use-case-diagram
+
+participant ":GetTemperatureReadingsFromDeviceWithinPeriodController"
+participant ":DeviceMapper"
+participant "myDeviceID:DeviceID"
+participant ":SensorReadingMapper"
+participant "myStartTime:Timestamp"
+participant "myEndTime:Timestamp"
+participant ":ServiceSensor"
+participant ":IRepositorySensor"
+participant ":ServiceSensorReading"
+participant ":IRepositorySensorReading"
+
+autonumber
+[o-> ":GetTemperatureReadingsFromDeviceWithinPeriodController" ++: getTemperatureReadingsFromDevice(deviceID,startTime,endTime)
+":GetTemperatureReadingsFromDeviceWithinPeriodController" -> ":DeviceMapper" ++: DTOToDeviceId(deviceID)
+":DeviceMapper" -> "myDeviceID:DeviceID" **: DeviceID(String deviceID)
+activate "myDeviceID:DeviceID"
+"myDeviceID:DeviceID" --> ":DeviceMapper" --: myDeviceID
+":DeviceMapper" --> ":GetTemperatureReadingsFromDeviceWithinPeriodController" --: myDeviceID
+
+":GetTemperatureReadingsFromDeviceWithinPeriodController" -> ":SensorReadingMapper" ++: DTOToTimestamp(String startTime)
+":SensorReadingMapper" -> "myStartTime:Timestamp" **: Timestamp.valueOf(String startTime)
+activate "myStartTime:Timestamp"
+"myStartTime:Timestamp" --> ":SensorReadingMapper" --: myStartTime
+":SensorReadingMapper" --> ":GetTemperatureReadingsFromDeviceWithinPeriodController" --: myStartTime
+
+":GetTemperatureReadingsFromDeviceWithinPeriodController" -> ":SensorReadingMapper" ++: DTOToTimestamp(String endTime)
+":SensorReadingMapper" -> "myEndTime:Timestamp" **: Timestamp.valueOf(String endTime)
+activate "myEndTime:Timestamp"
+"myEndTime:Timestamp" --> ":SensorReadingMapper" --: myEndTime
+":SensorReadingMapper" --> ":GetTemperatureReadingsFromDeviceWithinPeriodController" --: myEndTime
+
+":GetTemperatureReadingsFromDeviceWithinPeriodController" -> ":ServiceSensor" ++: getSensorsInDevice(myDeviceID)
+":ServiceSensor" -> ":IRepositorySensor" ++: getSensorsInDevice(deviceID)
+":IRepositorySensor" --> ":ServiceSensor" --: sensorsInDevice
+":ServiceSensor" --> ":GetTemperatureReadingsFromDeviceWithinPeriodController" --: sensorsInDevice
+
+loop sensor : sensorsInDevice
+
+":GetTemperatureReadingsFromDeviceWithinPeriodController" -> ":ServiceSensor" ++ : isSensorOfTemperature(sensor)
+":ServiceSensor" --> ":GetTemperatureReadingsFromDeviceWithinPeriodController" --: true
+ note left of ":GetTemperatureReadingsFromDeviceWithinPeriodController"
+                If sensorModelID == "GA100K"
+                returns true
+            end note
+":GetTemperatureReadingsFromDeviceWithinPeriodController" -> ":ServiceSensorReading" ++: getSensorReadingsBetweenTimestamp(myDeviceID, sensor.identity(),myStartTime,myEndTime)
+":ServiceSensorReading" -> ":IRepositorySensorReading" ++: getSensorReadingsBetweenTimestamp(myDeviceID, sensor.identity(),myStartTime,myEndTime)
+":IRepositorySensorReading" --> ":ServiceSensorReading" --: readingsBetweenTimeStamp
+
+":ServiceSensorReading" --> ":GetTemperatureReadingsFromDeviceWithinPeriodController" --: readingsBetweenTimeStamp
+
+":GetTemperatureReadingsFromDeviceWithinPeriodController" -> ":GetTemperatureReadingsFromDeviceWithinPeriodController": allTemperatureReadings.addAll(readingsBetweenTimeStamp)
+
+end loop
+
+":GetTemperatureReadingsFromDeviceWithinPeriodController" ->  ":SensorReadingMapper" ++: listToDTO(allTemperatureReadings)
+":SensorReadingMapper" --> ":GetTemperatureReadingsFromDeviceWithinPeriodController" --: allTemperatureReadingsDTO
+
+[o<--":GetTemperatureReadingsFromDeviceWithinPeriodController" -- : allTemperatureReadingsDTO
+@enduml

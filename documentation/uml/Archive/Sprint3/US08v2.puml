@@ -1,0 +1,18 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+!theme mars
+skinparam sequenceMessageAlign direction
+
+title US08 : I want to deactivate a device, so that it is no longer used.
+[o-> ":US08DeactivateDeviceController" ++ : 1 : deactivateDevice(deviceName,roomName)
+":US08DeactivateDeviceController"-> "myHouse:House" : 1.1 : getRoomByName(roomName)
+"myHouse:House"-> ":US08DeactivateDeviceController" : myRoom
+":US08DeactivateDeviceController"-> "myRoom:Room" : 1.2 : getDeviceByName(deviceName)
+"myRoom:Room"-> ":US08DeactivateDeviceController" : myDevice
+":US08DeactivateDeviceController" -> "myDevice:Device" ++: 1.2: deactivateDevice(myDevice)
+"myDevice:Device" --> ":US08DeactivateDeviceController" --: myDevice
+":US08DeactivateDeviceController"-> ":DeviceMapper" ++ : 1.3 : DeviceToDTOWithStatus(myDevice)
+":DeviceMapper"-> ":US08DeactivateDeviceController" -- : myDeviceDTO
+[o<-- ":US08DeactivateDeviceController" --: myDeviceDTO;
+@enduml

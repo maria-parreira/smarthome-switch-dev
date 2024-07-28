@@ -1,0 +1,11 @@
+.errorPage h1{
+    color: #1a1a1a;
+}
+
+.errorPage p{
+    color: #1a1a1a;
+}
+
+.errorPage{
+    background: red;
+}

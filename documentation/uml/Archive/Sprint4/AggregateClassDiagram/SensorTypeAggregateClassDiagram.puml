@@ -1,0 +1,82 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+ImplFactorySensorType "1" ..|> "1" FactorySensorType : implements >
+SensorType "1" -- "1" ImplFactorySensorType : < creates
+RepositorySensorType "1" ..|> "1" Repository : implements >
+SensorType "1" -- "1" Unit : has >
+SensorType "1" -- "1" Description : has >
+SensorType "1" -- "1" SensorTypeID : has >
+SensorType "*"-- "1" RepositorySensorType : uses >
+SensorTypeID "1" ..|> "1" DomainId : implements >
+Unit "1" ..|> "1" ValueObject : implements >
+Description "1" ..|> "1" ValueObject : implements >
+
+SensorType "1" ..|> "1" AggregateRoot : implements >
+
++interface Repository{
+}
+
+
++interface FactorySensorType{
++ createSensorType (sensorTypeID, description, unit): SensorType
+}
+
++interface AggregateRoot{
+}
+
++interface DomainId{
+}
+
++interface ValueObject{
+}
+
++class RepositorySensorType{
+- DATA: Map<SensorTypeID,SensorType>
++ save(SensorType): SensorType
++ findAll(): SensorType[]
++ ofIdentity(id): SensorType
++ containsOfIdentity(id): boolean
+}
+
++class ImplFactorySensorType{
++ createSensorType (sensorTypeID, description, unit): SensorType
+}
+
++class SensorType {
++ sensorTypeID: SensorTypeID
+- unit: Unit
+- description: Description
+# SensorType(sensorTypeID, unit, description): SensorType
++ sameAs (object): boolean
++ equals (object): boolean
++ identity (): SensorTypeID
+}
+
+
++class SensorTypeID {
+- sensorTypeID: String
++ SensorTypeID(sensorTypeID): SensorTypeID
+- isSensorTypeIDValid (sensorTypeID): boolean
++ equals (object): boolean
++ toString(): String
+}
+
++class Description {
+- description: String
++ Description(description): Description
+- isDescriptionValid (): boolean
++ equals (object): boolean
++ toString(): String
+}
+
++class Unit {
+- unit: String
++ Unit(unit): Unit
+- isUnitValid (): boolean
++ equals (object): boolean
++ toString(): String
+}
+
+
+@enduml

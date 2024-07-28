@@ -1,0 +1,23 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+box "  <<system>> \n SmartHome"
+    participant " <<container>> \n :Backend" as backend
+end box
+
+
+
+[o-> backend: POST /X
+
+note right
+  Add X.
+  X can represent room, device, sensor, sensor type or actuator
+end note
+
+[o<-- backend: 201 - CREATED + body
+
+
+
+@enduml

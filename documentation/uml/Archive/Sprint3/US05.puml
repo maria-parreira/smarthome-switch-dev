@@ -1,0 +1,52 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title <font color=#800020>US05: Add a new device to a room</font>
+
+
+autonumber
+
+participant ":US05V2AddDeviceToRoomController"
+participant ":House"
+participant ":RoomMapper"
+participant "myRoom :Room"
+participant ":FactoryDevice"
+participant "myDevice :Device"
+participant ":DeviceMapper"
+
+
+[o-> ":US05V2AddDeviceToRoomController" : addDeviceToRoom(roomName,deviceName)
+":US05V2AddDeviceToRoomController" -> ":House" : getRoomList()
+activate ":House"
+":US05V2AddDeviceToRoomController" <-- ":House" : listOfRooms
+deactivate ":House"
+":US05V2AddDeviceToRoomController" -> ":RoomMapper" : roomMap_NameAndDomain(rooms)
+activate ":RoomMapper"
+":US05V2AddDeviceToRoomController" <-- ":RoomMapper" : listOfRooms_DTOAndRooms
+deactivate ":RoomMapper"
+":US05V2AddDeviceToRoomController" -> ":US05V2AddDeviceToRoomController" : listOfRooms_DTOAndRooms.get(roomName)
+":US05V2AddDeviceToRoomController" -> "myRoom :Room" : addDevice(deviceName)
+activate "myRoom :Room"
+"myRoom :Room" -> ":FactoryDevice" : newDevice(deviceName)
+activate ":FactoryDevice"
+":FactoryDevice" -> "myDevice :Device" : Device(deviceName)
+activate "myDevice :Device"
+"myDevice :Device" --> ":FactoryDevice" : myDevice
+deactivate "myDevice :Device"
+":FactoryDevice" --> "myRoom :Room" : myDevice
+deactivate ":FactoryDevice"
+"myRoom :Room" -> "myRoom :Room" : getDevices()
+":US05V2AddDeviceToRoomController" <-- "myRoom :Room" : listOfDevices
+deactivate "myRoom :Room"
+
+":US05V2AddDeviceToRoomController" -> ":DeviceMapper" : devices_DomainToDTO(listOfDevices)
+activate ":DeviceMapper"
+":US05V2AddDeviceToRoomController" <-- ":DeviceMapper" : listOfDevicesDTO
+deactivate ":DeviceMapper"
+[o<-- ":US05V2AddDeviceToRoomController" : listOfDevicesDTO
+deactivate ":US05V2AddDeviceToRoomController"
+
+
+
+
+@enduml

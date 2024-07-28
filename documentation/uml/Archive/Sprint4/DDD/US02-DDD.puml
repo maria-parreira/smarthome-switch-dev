@@ -1,0 +1,114 @@
+
+@startuml
+title <font color=#800020>US02: Add a new room in order to configure it</font>
+
+autonumber
+
+participant ":US02AddNewRoomToDeviceController"
+participant ":RoomMapper"
+participant "houseId :HouseId"
+participant "roomId :RoomId"
+participant "floorNumber :FloorNumber"
+participant "length :Length"
+participant "width :Width"
+participant "height :Height"
+participant "dimensions :Dimensions"
+participant ":ImplFactoryRoom"
+participant "myRoom:Room"
+participant "repoRoom :RepoRoom"
+
+[o-> ":US02AddNewRoomToDeviceController" : addRoomToHouse(roomDTO)
+activate ":US02AddNewRoomToDeviceController"
+
+":US02AddNewRoomToDeviceController" -> ":RoomMapper" : DtoToHouseId(roomDTO.getHouseId())
+activate ":RoomMapper"
+":RoomMapper" -> "houseId :HouseId" : HouseId(roomDTO.getHouseId())
+activate "houseId :HouseId"
+"houseId :HouseId" --> ":RoomMapper" : houseId
+deactivate "houseId :HouseId"
+
+":US02AddNewRoomToDeviceController" <-- ":RoomMapper" : houseId
+
+":US02AddNewRoomToDeviceController" -> ":RoomMapper" : DtoToRoomId(roomDTO.getRoomId())
+":RoomMapper" -> "roomId :RoomId" : RoomId(roomDTO.getRoomId())
+activate "roomId :RoomId"
+"roomId :RoomId" --> ":RoomMapper" : roomId
+deactivate "roomId :RoomId"
+
+":US02AddNewRoomToDeviceController" <-- ":RoomMapper" : roomId
+
+":US02AddNewRoomToDeviceController" -> ":RoomMapper" : DtoToFloorNumber(roomDTO.getFloorNumber())
+":RoomMapper" -> "floorNumber :FloorNumber" : FloorNumber(roomDTO.getFloorNumber())
+activate "floorNumber :FloorNumber"
+"floorNumber :FloorNumber" --> ":RoomMapper" : floorNumber
+deactivate "floorNumber :FloorNumber"
+
+":US02AddNewRoomToDeviceController" <-- ":RoomMapper" : floorNumber
+
+":US02AddNewRoomToDeviceController" -> ":RoomMapper" : DtoToLength(roomDTO.getLength())
+
+":RoomMapper" -> "length :Length" : Length(roomDTO.getLength())
+activate "length :Length"
+"length :Length" --> ":RoomMapper" : length
+deactivate "length :Length"
+
+":US02AddNewRoomToDeviceController" <-- ":RoomMapper" : length
+
+":US02AddNewRoomToDeviceController" -> ":RoomMapper" : DtoToWidth(roomDTO.getWidth())
+":RoomMapper" -> "width :Width" : Width(roomDTO.getWidth())
+activate "width :Width"
+"width :Width" --> ":RoomMapper" : width
+deactivate "width :Width"
+
+":US02AddNewRoomToDeviceController" <-- ":RoomMapper" : width
+
+":US02AddNewRoomToDeviceController" -> ":RoomMapper" : DtoToHeight(roomDTO.getHeight())
+":RoomMapper" -> "height :Height" : Height(roomDTO.getHeight())
+activate "height :Height"
+"height :Height" --> ":RoomMapper" : height
+deactivate "height :Height"
+
+":US02AddNewRoomToDeviceController" <-- ":RoomMapper" : height
+
+deactivate ":RoomMapper"
+":US02AddNewRoomToDeviceController" -> "dimensions :Dimensions" : new Dimensions dimensions(length, width, height)
+activate "dimensions :Dimensions"
+"dimensions :Dimensions" --> ":US02AddNewRoomToDeviceController" : dimensions
+deactivate "dimensions :Dimensions"
+
+
+
+
+":US02AddNewRoomToDeviceController" -> ":ImplFactoryRoom" : createRoom(houseId, roomId, floorNumber, dimensions)
+activate ":ImplFactoryRoom"
+":ImplFactoryRoom" -> "myRoom:Room" : Room(houseId, roomId, floorNumber, dimensions)
+activate "myRoom:Room"
+"myRoom:Room" --> ":ImplFactoryRoom" : myRoom
+deactivate ":ImplFactoryRoom"
+":ImplFactoryRoom" --> ":US02AddNewRoomToDeviceController" : myRoom
+deactivate "myRoom:Room"
+
+":US02AddNewRoomToDeviceController" -> "repoRoom :RepoRoom" : containsOfIdentity(roomId)
+activate "repoRoom :RepoRoom"
+"repoRoom :RepoRoom" --> ":US02AddNewRoomToDeviceController" : false
+deactivate "repoRoom :RepoRoom"
+
+
+
+
+  ":US02AddNewRoomToDeviceController" -> "repoRoom :RepoRoom" : save(myRoom)
+  activate "repoRoom :RepoRoom"
+  "repoRoom :RepoRoom" --> ":US02AddNewRoomToDeviceController" : myRoom
+  deactivate "repoRoom :RepoRoom"
+
+  ":US02AddNewRoomToDeviceController" -> ":RoomMapper" : DomainToDTO(myRoom)
+  activate ":RoomMapper"
+  ":RoomMapper" --> ":US02AddNewRoomToDeviceController" : myRoomDTO
+  deactivate ":RoomMapper"
+
+  [o<-- ":US02AddNewRoomToDeviceController" : myRoomDTO
+  deactivate ":US02AddNewRoomToDeviceController"
+
+deactivate ":US02AddNewRoomToDeviceController"
+
+@enduml

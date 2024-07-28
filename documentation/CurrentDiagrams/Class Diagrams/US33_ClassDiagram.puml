@@ -1,0 +1,144 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+'left to right direction
+
+class GetMeasurementsFromDeviceWithinPeriodController
+
+class GetReadingsWithinPeriodDTO
+class SensorReadingDTO
+class ServiceSensorReading
+
+class SensorReadingMapper
+class DeviceMapper
+
+interface IRepositorySensorReading
+class SensorReading
+
+class DeviceId
+class SensorID
+class Reading
+class SensorReadingID
+class Timestamp
+
+
+
+GetMeasurementsFromDeviceWithinPeriodController --o ServiceSensorReading : has >
+GetMeasurementsFromDeviceWithinPeriodController --> SensorReadingMapper : uses >
+GetMeasurementsFromDeviceWithinPeriodController --> DeviceMapper : uses >
+
+GetMeasurementsFromDeviceWithinPeriodController --> SensorReadingDTO : uses >
+GetMeasurementsFromDeviceWithinPeriodController --> GetReadingsWithinPeriodDTO : uses >
+
+DeviceMapper --> DeviceId : instantiates >
+SensorReadingMapper -up-> Timestamp : instantiates >
+SensorReadingMapper --> SensorReadingDTO : instantiates >
+
+ServiceSensorReading --o IRepositorySensorReading : has >
+IRepositorySensorReading --> SensorReading : stores >
+
+ServiceSensorReading --> DeviceId : uses >
+ServiceSensorReading --> Timestamp : uses >
+
+SensorReading --o DeviceId : has >
+SensorReading --o SensorID : has >
+SensorReading --o Reading : has >
+SensorReading --o Timestamp : has >
+SensorReading --o SensorReadingID : has >
+
+class GetMeasurementsFromDeviceWithinPeriodController {
+- serviceSensorReading: ServiceSensorReading
++ GetMeasurementsFromDeviceWithinPeriodController(serviceSensorReading: ServiceSensorReading)
++ getMeasurementsFromDeviceWithinPeriod(deviceId: String, start: String, end: String): List<SensorReadingDTO>
+}
+
+class ServiceSensorReading {
+- IRepositorySensorReading: repositorySensorReading
++ ServiceSensorReading(repositorySensorReading: IRepositorySensorReading)
++ getMeasurementsFromDeviceWithinPeriod(deviceId: DeviceId, start: Timestamp, end: Timestamp): List<SensorReading>
+}
+
+class SensorReadingDTO {
++ SensorReadingDTO(sensorReadingID: String, reading: String, deviceID: String, sensorID: String, timeStamp: String) : SensorReadingDTO
+}
+
+class GetReadingsWithinPeriodDTO {
+- deviceId: String
+- startTime: Timestamp
+- endTime: Timestamp
++ GetReadingsWithinPeriodDTO(deviceId: String, start: Timestamp, end: Timestamp) : GetReadingsWithinPeriodDTO
++ getDeviceId(): String
++ getStartTime(): Timestamp
++ getEndTime(): Timestamp
+}
+
+interface IRepositorySensorReading {
++ getMeasurementsFromDeviceWithinPeriod(deviceId: DeviceId, start: Timestamp, end: Timestamp): List<SensorReading>
+}
+
+class DeviceMapper {
++ DTOToDeviceId (deviceId: String): DeviceId
+}
+
+class SensorReadingMapper {
++ DTOToTimestamp (timestamp: String): Timestamp
++ domainListToDTO (sensorReadings: List<SensorReading>): List<SensorReadingDTO>
+}
+
+class DeviceId {
+- deviceId: String
++ DeviceId(deviceId: String) : DeviceId
++ equals (object: Object): boolean
++ toString(): String
++ hashCode(): int
+}
+
+class Timestamp {
++ Timestamp.ValueOf(timestamp: String) : Timestamp
+}
+
+class SensorID {
+- sensorID: String
++ SensorID(sensorID: String) : SensorID
+- isSensorIDValid(sensorID: String): boolean
++ equals (object: Object): boolean
++ toString(): String
++ hashCode(): int
+}
+
+class Reading {
+- reading: String
++ Reading(reading: String) : Reading
++ equals (object: Object): boolean
++ toString(): String
++ hashCode(): int
+}
+
+class SensorReadingID {
+- sensorReadingID: String
++ SensorReadingID(sensorReadingID: String) : SensorReadingID
+- isSensorReadingIDValid(sensorReadingID: String): boolean
++ equals (object: Object): boolean
++ toString(): String
++ hashCode(): int
+}
+
+class SensorReading {
+- deviceId: DeviceId
+- sensorID: SensorID
+- reading: Reading
+- timestamp: Timestamp
+- sensorReadingID: SensorReadingID
++ SensorReading(deviceId: DeviceId, sensorId: SensorID, reading: Reading, timestamp: Timestamp, sensorReadingID: SensorReadingID) : SensorReading
++ getReading(): Reading
++ getDeviceId(): DeviceId
++ getSensorID(): SensorID
++ getTimestamp(): Timestamp
++ identity(): SensorReadingID
++ equals (object: Object): boolean
++ sameAs (object: Object): boolean
++ hashCode(): int
+}
+
+
+@enduml

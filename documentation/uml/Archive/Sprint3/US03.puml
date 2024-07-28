@@ -1,0 +1,36 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+
+
+title US03: Get Room List
+
+autonumber
+
+participant ":RoomListController"
+participant "myHouse : House"
+participant ":RoomDTOMapper"
+
+[o-> ":RoomListController" : getRoomList()
+activate ":RoomListController"
+
+":RoomListController" -> "myHouse : House" : getRoomList()
+activate "myHouse : House"
+
+
+"myHouse : House" --> ":RoomListController" : listOfRooms
+deactivate "myHouse : House"
+
+":RoomListController" -> ":RoomDTOMapper" : convertDomainToDTO(listOfRooms)
+activate ":RoomDTOMapper"
+
+":RoomDTOMapper" --> ":RoomListController" : roomDTOList
+deactivate ":RoomDTOMapper"
+
+[o<-- ":RoomListController": roomDTOList
+deactivate ":RoomListController"
+
+
+
+@enduml
+

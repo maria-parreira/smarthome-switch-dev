@@ -1,0 +1,82 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title <font color=#800020>US01: Configure the Location of the House</font>
+
+autonumber
+
+[o->"US01ConfigureLocationController": configureLocation(LocationDTO)
+activate "US01ConfigureLocationController"
+
+"US01ConfigureLocationController" -> ":HouseMapper" : mapHouseIdToVo(LocationDTO.getHouseId())
+activate ":HouseMapper"
+
+":HouseMapper" -> "houseId:HouseId"** : HouseId(houseId)
+activate "houseId:HouseId"
+
+"houseId:HouseId" --> ":HouseMapper" : houseId
+deactivate "houseId:HouseId"
+
+":HouseMapper" --> "US01ConfigureLocationController" : houseId
+deactivate ":HouseMapper"
+
+"US01ConfigureLocationController" -> "repositoryHouse:RepositoryHouse" : containsOfIdentity(houseId)
+activate "repositoryHouse:RepositoryHouse"
+
+note right
+only continue if true
+else returns null
+end note
+
+"repositoryHouse:RepositoryHouse" --> "US01ConfigureLocationController" : true
+deactivate "repositoryHouse:RepositoryHouse"
+
+"US01ConfigureLocationController" -> ":HouseMapper" : mapLocationToVo(LocationDTO.getAddress(),LocationDTO.getZipCode(),LocationDTO.getLatitude(),LocationDTO.getLongitude())
+activate ":HouseMapper"
+
+":HouseMapper" -> "gps:GPSCoordinates"** : GPSCoordinates(latitude,longitude)
+activate "gps:GPSCoordinates"
+
+"gps:GPSCoordinates" --> ":HouseMapper" : gps
+deactivate "gps:GPSCoordinates"
+
+":HouseMapper" -> "location:Location"** : Location(address,zipcode,gps)
+activate "location:Location"
+
+"location:Location" --> ":HouseMapper" : location
+deactivate "location:Location"
+
+":HouseMapper" --> "US01ConfigureLocationController" : location
+deactivate ":HouseMapper"
+
+"US01ConfigureLocationController" -> "repositoryHouse:RepositoryHouse" **: ofIdentity(houseId)
+activate "repositoryHouse:RepositoryHouse"
+
+"repositoryHouse:RepositoryHouse" --> "US01ConfigureLocationController" : myHouse
+deactivate "repositoryHouse:RepositoryHouse"
+
+"US01ConfigureLocationController" -> "myHouse:House"** : configureLocation(location)
+activate "myHouse:House"
+"myHouse:House" --> "US01ConfigureLocationController" : true
+deactivate "myHouse:House"
+
+note right
+only continue if true
+else returns false
+end note
+
+"US01ConfigureLocationController" -> "repositoryHouse:RepositoryHouse"** : update(myHouse)
+activate "repositoryHouse:RepositoryHouse"
+
+"repositoryHouse:RepositoryHouse" --> "US01ConfigureLocationController" :myHouse
+deactivate "repositoryHouse:RepositoryHouse"
+
+"US01ConfigureLocationController" -> ":HouseMapper": mapHouseToDTO(myHouse)
+activate ":HouseMapper"
+
+":HouseMapper" --> "US01ConfigureLocationController" : houseDTO
+deactivate ":HouseMapper"
+
+[o<--"US01ConfigureLocationController": houseDTO
+
+@enduml

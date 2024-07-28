@@ -1,0 +1,32 @@
+v@startuml
+'https://plantuml.com/sequence-diagram
+
+title <font color=#800020>US34: Get maximum temperature difference between a device in a room and the outside</font>
+
+autonumber
+
+participant ":GetMaxTemperatureDifferenceController"
+participant ":GetTemperatureReadingsFromDeviceWithinPeriodController"
+participant ":SensorReadingMapper"
+
+[o-> ":GetMaxTemperatureDifferenceController" ++ : GetMaxTemperatureDifference(getMaxDifferenceDTO)
+
+":GetMaxTemperatureDifferenceController" -> ":GetTemperatureReadingsFromDeviceWithinPeriodController" ++ : getTemperatureReadingsFromDevice(getMaxDifferenceDTO.deviceIDIndoor,getMaxDifferenceDTO.startTime,getMaxDifferenceDTO.endTime)
+":GetTemperatureReadingsFromDeviceWithinPeriodController" --> ":GetMaxTemperatureDifferenceController" -- : allInsideTemperatureReadingsDTO
+":GetMaxTemperatureDifferenceController" -> ":SensorReadingMapper" ++ : DTOsToSensorReading(allInsideTemperatureReadingsDTO)
+":GetMaxTemperatureDifferenceController" <-- ":SensorReadingMapper" -- : insideReadings
+
+":GetMaxTemperatureDifferenceController" -> ":GetListOfReadingsFromInsideDeviceWithinTimePeriodController" ++ : getTemperatureReadingsFromDevice(getMaxDifferenceDTO.deviceIDOutdoor, getMaxDifferenceDTO.startTime, getMaxDifferenceDTO.endTime)
+":GetListOfReadingsFromInsideDeviceWithinTimePeriodController" --> ":GetMaxTemperatureDifferenceController" -- : allOutsideTemperatureReadingsDTO
+":GetMaxTemperatureDifferenceController" -> ":SensorReadingMapper" ++ : DTOsToSensorReading(allOutsideTemperatureReadingsDTO)
+":GetMaxTemperatureDifferenceController" <-- ":SensorReadingMapper" -- : outsideReadings
+
+":GetMaxTemperatureDifferenceController" -> "GetMaxDifferenceDTO": getDeltaTime()
+"GetMaxDifferenceDTO" --> ":GetMaxTemperatureDifferenceController" -- : deltaTime
+":GetMaxTemperatureDifferenceController" -> ":SensorReadingService" ++ : getDifferenceBetweenReadings(insideReadings, outsideReadings, deltaTime)
+":SensorReadingService" --> ":GetMaxTemperatureDifferenceController" -- : maxDifference
+
+[o<-- ":GetMaxTemperatureDifferenceController" -- : maxDifference
+
+
+@enduml

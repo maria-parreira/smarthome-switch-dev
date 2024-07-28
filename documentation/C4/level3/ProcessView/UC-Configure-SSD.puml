@@ -1,0 +1,26 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+!pragma teoz true
+
+
+box "<<container>> \n  :Backend"
+    participant " <<component>> \n :Server" as Server
+    participant " <<component>> \n :BD" as BD
+end box
+
+[o-> Server: PATCH /X
+
+note right
+  Configure X.
+  X represents configure house, actuator or deactivate device
+end note
+
+Server -> BD : insert
+BD --> Server : xDataModel
+[o<-- Server: 200 - OK  + body
+
+
+
+@enduml

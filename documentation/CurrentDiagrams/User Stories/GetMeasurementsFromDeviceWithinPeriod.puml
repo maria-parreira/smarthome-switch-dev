@@ -1,0 +1,39 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+title I want to get a list of all measurement of a device in a room, in a given period.
+
+participant ":GetMeasurementsFromDeviceWithinPeriodController"
+participant ":DeviceMapper"
+participant "myDeviceID:DeviceID"
+participant ":ServiceSensorReading"
+participant ":IRepositorySensorReading"
+participant ":SensorReadingMapper"
+
+
+autonumber
+[o-> ":GetMeasurementsFromDeviceWithinPeriodController" ++: GetMeasurementsFromDeviceWithinPeriod(GetReadingsWithinPeriodDTO entryDTO)
+
+":GetMeasurementsFromDeviceWithinPeriodController" -> ":DeviceMapper" ++: DTOToDeviceId(String deviceID)
+":DeviceMapper" -> "myDeviceID:DeviceID" **: DeviceID(entryDTO.getDeviceID())
+activate "myDeviceID:DeviceID"
+"myDeviceID:DeviceID" --> ":DeviceMapper" --: myDeviceID
+":DeviceMapper" --> ":GetMeasurementsFromDeviceWithinPeriodController" --: myDeviceID
+":GetMeasurementsFromDeviceWithinPeriodController" --> ":GetMeasurementsFromDeviceWithinPeriodController" : entryDTO.getStartTime
+":GetMeasurementsFromDeviceWithinPeriodController" --> ":GetMeasurementsFromDeviceWithinPeriodController" : entryDTO.getEndTime
+
+":GetMeasurementsFromDeviceWithinPeriodController" -> ":ServiceSensorReading" ++: getMeasurementsFromDeviceWithinPeriod(myDeviceID, start, end)
+":ServiceSensorReading" -> ":IRepositorySensorReading" ++: getMeasurementsFromDeviceWithinPeriod(myDeviceID, start, end)
+
+loop for each reading
+":IRepositorySensorReading" -> ":IRepositorySensorReading" : getMeasurementsFromDeviceWithinPeriod(myDeviceID, start, end)
+end loop
+
+":IRepositorySensorReading" --> ":ServiceSensorReading" --: readings
+":ServiceSensorReading" --> ":GetMeasurementsFromDeviceWithinPeriodController" --: readings
+
+":GetMeasurementsFromDeviceWithinPeriodController" -> ":SensorReadingMapper" ++: domainListToDTO(readings)
+":SensorReadingMapper" --> ":GetMeasurementsFromDeviceWithinPeriodController" --: readingsDTO
+[o<-- ":GetMeasurementsFromDeviceWithinPeriodController" --: readingsDTO
+
+@enduml

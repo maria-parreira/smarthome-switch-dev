@@ -1,0 +1,75 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+
+title US03: As an Administrator, I want to have a list of existing rooms.
+
+
+autonumber
+participant ":UC03GetRoomsController"
+participant ":HouseMapper"
+participant "myHouseID:HouseID"
+participant ":ServiceRoom"
+participant ":RepositoryRoom"
+participant ":Room"
+participant ":HouseId"
+participant ":RoomMapper"
+
+note left of ":UC03GetRoomsController"
+   houseDTO derive from GetHousesController
+end note
+
+[o-> ":UC03GetRoomsController" : getRooms(houseID)
+activate ":UC03GetRoomsController"
+":UC03GetRoomsController"->":HouseMapper" : DTOtoHouseId(houseID)
+activate ":HouseMapper"
+":HouseMapper" -> "myHouseID:HouseID" ** : HouseId(houseId)
+activate "myHouseID:HouseID"
+"myHouseID:HouseID" --> ":HouseMapper" : myHouseID
+deactivate "myHouseID:HouseID"
+":HouseMapper"-->":UC03GetRoomsController" : myHouseID
+deactivate ":HouseMapper"
+
+":UC03GetRoomsController"->":ServiceRoom" : getRooms(myHouseID)
+activate ":ServiceRoom"
+":ServiceRoom"->":RepositoryRoom" : getRoomsInHouse(myHouseID)
+activate ":RepositoryRoom"
+":RepositoryRoom"->":RepositoryRoom" : findAll()
+
+
+":RepositoryRoom"-->":RepositoryRoom" : allRooms
+
+
+loop room : allRooms
+
+    ":RepositoryRoom"->":Room": getHouseId()
+    activate ":Room"
+    ":Room"-->":RepositoryRoom" : roomHouseId
+    deactivate ":Room"
+    ":RepositoryRoom" -> ":HouseId" : equals(myHouseID)
+    activate ":HouseId"
+    ":HouseId" --> ":RepositoryRoom" : true
+
+    note left of ":RepositoryRoom"
+        If it returns false (13), the room
+        is not added to the list.
+    end note
+
+    deactivate ":HouseId"
+    ":RepositoryRoom"->":RepositoryRoom" : roomsInHouse.add(room)
+end
+":RepositoryRoom"-->":ServiceRoom" : roomsInHouse
+deactivate ":RepositoryRoom"
+":ServiceRoom"-->":UC03GetRoomsController" : roomsInHouse
+deactivate ":ServiceRoom"
+
+
+":UC03GetRoomsController" -> ":RoomMapper" : roomsListToDTO(roomsInHouse)
+
+activate ":RoomMapper"
+":RoomMapper" --> ":UC03GetRoomsController" : roomsDTO
+deactivate ":RoomMapper"
+[o<--":UC03GetRoomsController" : roomsDTO
+deactivate ":UC03GetRoomsController"
+
+@enduml

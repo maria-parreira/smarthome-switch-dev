@@ -1,0 +1,77 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+ImplFactorySensorModel "1" ..|> "1" FactorySensorModel : implements >
+SensorModel "1"-- "1"ImplFactorySensorModel : < creates
+SensorModel "1" -- "1" SensorModelID : has >
+SensorModel "1" -- "1" SensorModelName : has >
+SensorModel "*" -- "1" RepositorySensorModel
+RepositorySensorModel "1" ..|> "1" Repository : implements >
+RepositorySensorModel "1" --> "1" ConfigFile : uses >
+SensorModel "1" ..|> "1" AggregateRoot : implements >
+SensorModelID "1" ..|> "1" DomainId : implements >
+SensorModelName "1" --|> "1" ValueObject : implements >
+
++interface Repository{
+}
+
++interface AggregateRoot{
+}
+
++interface ValueObject{
+}
+
++interface FactorySensorModel{
++ createSensorModel (sensorModelName, sensorModelID, sensorTypeID): SensorModel
+
+
+}
+
+file ConfigFile{
+}
+
++interface DomainId{
+}
+
++class RepositorySensorModel{
+- DATA: List<SensorModelID, SensorModel>
++ save(SensorModel): SensorModel
++ generateModelList(filePathname) : String[]
++ findAll(): SensorModel[]
++ ofIdentity(id): SensorModel
++ containsOfIdentity(id): boolean
+}
+
++class ImplFactorySensorModel{
++ createSensorModel (sensorModelName, sensorModelID, sensorTypeID): SensorModel
+
+}
+
++class SensorModel {
+- sensorModelName: SensorModelName
+- sensorModelID: SensorModelID
+- sensorTypeID: SensorTypeID
+# SensorModel(sensorModelName, sensorModelID, sensorTypeID)
++ sameAs (object): boolean
+}
+
++class SensorModelName {
+- sensorModelName: String
++ SensorModelName (sensorModelName): SensorModelName
+- isSensorModelNameValid (sensorModelName): boolean
++ isSensorModelNameInListOfModels (): boolean
++ generateModelList(): List<SensorModel>
++ equals (object): boolean
++ toString(): String
+}
++class SensorModelID {
+- sensorModelID: String
++ SensorModeID(sensorModelID): SensorModelID
++ equals (object): boolean
++ toString(): String
+}
+
++interface DomainId{
+}
+
+@enduml

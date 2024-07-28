@@ -1,0 +1,139 @@
+@startuml
+title <font color=#800020> UC: Add a new room in order to configure it</font>
+
+autonumber
+
+participant ":AddNewRoomToHouseController"
+participant ":RoomMapper"
+participant ":HouseMapper"
+participant ":RoomService"
+participant "houseId :HouseId"
+participant "roomId :RoomId"
+participant "floorNumber :FloorNumber"
+participant "length :Length"
+participant "width :Width"
+participant "height :Height"
+participant "dimensions :Dimensions"
+participant ":ImplFactoryRoom"
+participant "myRoom:Room"
+participant ":IRepositoryRoom"
+
+[o-> ":AddNewRoomToHouseController" : addRoomToHouse(roomDTO)
+activate ":AddNewRoomToHouseController"
+
+":AddNewRoomToHouseController" -> ":HouseMapper" : DtoToHouseId(roomDTO.getHouseId())
+activate ":HouseMapper"
+
+":HouseMapper" -> "houseId :HouseId"** : HouseId(roomDTO.getHouseId())
+activate "houseId :HouseId"
+
+"houseId :HouseId"--> ":HouseMapper" : houseId
+deactivate "houseId :HouseId"
+
+
+":AddNewRoomToHouseController" <-- ":HouseMapper" : houseId
+deactivate ":HouseMapper"
+
+":AddNewRoomToHouseController" -> ":RoomMapper" : DtoToRoomId(roomDTO.getRoomId())
+activate ":RoomMapper"
+
+":RoomMapper" -> "roomId :RoomId"** : RoomId(roomDTO.getRoomId())
+activate "roomId :RoomId"
+
+"roomId :RoomId" --> ":RoomMapper" : roomId
+deactivate "roomId :RoomId"
+deactivate ":RoomMapper"
+
+":AddNewRoomToHouseController" <-- ":RoomMapper" : roomId
+
+
+":AddNewRoomToHouseController" -> ":RoomMapper" : DtoToFloorNumber(roomDTO.getFloorNumber())
+activate ":RoomMapper"
+
+":RoomMapper" -> "floorNumber :FloorNumber"** : FloorNumber(roomDTO.getFloorNumber())
+activate "floorNumber :FloorNumber"
+
+"floorNumber :FloorNumber" --> ":RoomMapper" : floorNumber
+deactivate "floorNumber :FloorNumber"
+deactivate ":RoomMapper"
+
+":AddNewRoomToHouseController" <-- ":RoomMapper" : floorNumber
+
+":AddNewRoomToHouseController" -> ":RoomMapper" : DtoToLength(roomDTO.getLength())
+activate ":RoomMapper"
+":RoomMapper" -> "length :Length"** : Length(roomDTO.getLength())
+activate "length :Length"
+"length :Length" --> ":RoomMapper" : length
+deactivate "length :Length"
+deactivate ":RoomMapper"
+
+":AddNewRoomToHouseController" <-- ":RoomMapper" : length
+
+":AddNewRoomToHouseController" -> ":RoomMapper" : DtoToWidth(roomDTO.getWidth())
+activate ":RoomMapper"
+
+":RoomMapper" -> "width :Width"** : Width(roomDTO.getWidth())
+activate "width :Width"
+
+"width :Width" --> ":RoomMapper" : width
+deactivate "width :Width"
+deactivate ":RoomMapper"
+
+":AddNewRoomToHouseController" <-- ":RoomMapper" : width
+
+":AddNewRoomToHouseController" -> ":RoomMapper" : DtoToHeight(roomDTO.getHeight())
+activate ":RoomMapper"
+
+":RoomMapper" -> "height :Height"** : Height(roomDTO.getHeight())
+activate "height :Height"
+
+"height :Height" --> ":RoomMapper" : height
+deactivate "height :Height"
+deactivate ":RoomMapper"
+
+":AddNewRoomToHouseController" <-- ":RoomMapper" : height
+
+deactivate ":RoomMapper"
+
+":AddNewRoomToHouseController" -> "dimensions :Dimensions"** : new dimensions(length, width, height)
+activate "dimensions :Dimensions"
+
+"dimensions :Dimensions" --> ":AddNewRoomToHouseController" : dimensions
+deactivate "dimensions :Dimensions"
+
+":AddNewRoomToHouseController" -> ":RoomService" : addRoom(houseId, roomId, floorNumber, dimensions)
+activate ":RoomService"
+
+":RoomService" -> ":ImplFactoryRoom" : createRoom(houseId, roomId, floorNumber, dimensions)
+activate ":ImplFactoryRoom"
+
+":ImplFactoryRoom" -> "myRoom:Room" : Room(houseId, roomId, floorNumber, dimensions)
+activate "myRoom:Room"
+
+"myRoom:Room" --> ":ImplFactoryRoom" --: myRoom
+
+":ImplFactoryRoom" --> ":RoomService" : myRoom
+deactivate ":ImplFactoryRoom"
+deactivate "myRoom:Room"
+
+":RoomService" -> ":IRepositoryRoom" : save(myRoom)
+activate ":IRepositoryRoom"
+
+":IRepositoryRoom" --> ":RoomService" : myRoom
+deactivate ":IRepositoryRoom"
+
+
+
+":RoomService" --> ":AddNewRoomToHouseController" : myRoom
+deactivate ":RoomService"
+
+":AddNewRoomToHouseController" -> ":RoomMapper" : DomainToDTO(myRoom)
+activate ":RoomMapper"
+
+":RoomMapper" --> ":AddNewRoomToHouseController" : myRoomDTO
+deactivate ":RoomMapper"
+
+[o<-- ":AddNewRoomToHouseController" : myRoomDTO
+deactivate ":AddNewRoomToHouseController"
+
+@enduml

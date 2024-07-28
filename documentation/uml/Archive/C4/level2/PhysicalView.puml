@@ -1,0 +1,8 @@
+@startuml
+'https://plantuml.com/deployment-diagram
+
+node "localhost:" as mainSystem #lightblue{
+    component "<<container>> \n  Backend"
+}
+
+@enduml

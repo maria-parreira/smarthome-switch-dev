@@ -1,0 +1,87 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+box "SmartHome"
+    box " <<component>> \n     :Server"
+        participant ":Router"
+        participant ":Controller"
+        participant ":Mapper"
+        participant "vo :VO"
+        participant ":Service"
+        participant ":XRepository"
+        participant "xDM1 :XDataModel"
+        participant ":Factory"
+        participant "xObject :XDomainClass"
+        participant ":Driver"
+        participant "xObjectDTO :DTO"
+    endbox
+end box
+
+
+
+[o-> ":Router": PATCH /X
+":Router" -> ":Controller": configureX()
+note right
+  Get list of X.
+  X can represent rooms, devices or sensor readings
+end note
+":Controller" -> ":Mapper" : create VO()
+note left
+  createVO() can be called
+  several times according
+  to the requested X
+end note
+":Mapper" -> "vo :VO" **:  new VO()
+":Mapper" <-- "vo :VO": vo
+":Mapper" --> ":Controller": vo
+
+":Controller" -> ":Service": configureX()
+":Service" -> ":XRepository": ofIdentity()
+":XRepository" -> ":Driver" : findById()
+":Driver" ->o] : query
+":Driver" <--o] : xDM1
+":Driver" --> ":XRepository" : Optional<xDM1>
+
+":XRepository" -> "xDM1 :XDataModel" : toDomain(xDM1)
+note right
+  only if Optional<xDM1> is present
+end note
+"xDM1 :XDataModel" -> ":Factory" : createX()
+":Factory" -> "xObject :XDomainClass" ** : new X()
+"xObject :XDomainClass" --> ":Factory" : xObject
+":Factory" --> "xDM1 :XDataModel" : xObject
+"xDM1 :XDataModel" --> ":XRepository" : xObject
+":XRepository" --> ":Service": xObject
+
+":Service" -> "xObject :XDomainClass" : configureX()
+":Service" <-- "xObject :XDomainClass" : true
+
+":Service" -> ":XRepository" : update(xObject)
+
+":XRepository" -> ":Driver" : findById()
+":Driver" ->o] : query
+":Driver" <--o] : xDM1
+":Driver" --> ":XRepository" : Optional<xDM1>
+
+":XRepository" -> ":Driver": save(xDM1)
+note right
+  only if Optional<xDM1> is present
+end note
+":Driver" ->o] : insert
+":Driver" <--o] : xDM1
+":Driver" --> ":XRepository" :  xDM1
+
+":XRepository" --> ":Service": xObject
+
+":Service" --> ":Controller": xObject
+
+":Controller" -> "xObjectDTO :DTO": domainToWebDTO(xObject)
+"xObjectDTO :DTO" --> ":Controller": xObjectDTO
+":Controller" --> ":Router": 200 - OK  + body
+[o<--":Router": 200 - OK  + body
+
+
+
+@enduml

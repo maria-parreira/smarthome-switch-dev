@@ -1,0 +1,34 @@
+@startuml ONF01S_Class_Diagram
+
+class ONF01S {
+    - _sensorType: SensorType
+    - _data: Map <Integer, String>
+    - _value: ONF01SValue
+
+    + ONF01S(catalogue: Catalogue)
+    + getSensorType(): SensorType
+    + getValue(): Value
+    + setValue(Integer readingNumber): void
+    + setData(): Map <Integer, String>
+}
+
+interface Sensor {
+    + getSensorType(): SensorType
+}
+
+interface Value {
+}
+
+class ONF01SValue {
+    - _sValue: String
+    - areConstructorArgumentsValid(sValue: String): boolean
+    + ONF01SValue(String sValue)
+    + toString(): String
+}
+
+
+ONF01S ..|> Sensor : implements
+ONF01S -- ONF01SValue : uses >
+ONF01SValue ..|> Value : implements
+
+@enduml

@@ -1,0 +1,96 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+Sensor_ValueTwoLocalTimes --|> Sensor : extends >
+AVPC500W ..|> Sensor_ValueTwoLocalTimes : implements >
+AVPC500W ..|> AggregateRoot : implements >
+AVPC500WValue ..|> ValueObject : implements >
+AVPC500WValue ..|> Value : implements >
+AVPC500W -- AVPC500WValue : uses >
+AVPC500W -- SensorModelId : contains >
+AVPC500W -- SensorId : contains >
+AVPC500W -- DeviceId : contains >
+AggregateRoot --|> DomainEntity : extends >
+DeviceId ..|> DomainId : implements >
+SensorId ..|> DomainId : implements >
+SensorModelId ..|> DomainId : implements >
+DomainId --|> ValueObject : extends >
+
+class SensorModelId{
+}
+class SensorId{
+}
+class DeviceId{
+}
+
+interface ValueObject{
+}
+
+interface Sensor{
+}
+
+interface DomainId {
+}
+
+interface Sensor_ValueTwoLocalTimes{
++ getValue(LocalTime start,LocalTime end)
+}
+
+interface AggregateRoot{
+}
+
+interface Value{
+}
+
+class AVPC500W{
+- avpc500WValue: AVPC500WValue
+- deviceId: DeviceId
+- sensorModelId: SensorModelId
+- sensorId: SensorId
+- readings: Map <LocalTime, Double>
+
++ AVPC500W(device id: Device id, sensorModelID: SensorModelID, sensorID:SensorId):
+- areConstructorArgumentsValid (sensorID: SensorID, deviceID: DeviceID, sensorModelID: SensorModelID): boolean
+- readingsWithinPeriod(LocalTime start, LocalTime end): List<Double>
+- averagePowerConsumption(LocalTime start, LocalTime end): AVPC500WValue
+- setData(): Map <LocalTime, Double>
++ getValue(LocalTime startTime, LocalTime endTime): AVPC500WValue
++ identity(): SensorId
++ getDeviceID(): deviceID
++ getSensorModelID(): sensorModelID
++ sameAs (object : Object): boolean
++ equals (object : Object): boolean
+}
+
+
+class AVPC500WValue {
+- _averagePowerConsumption:Double
+
++ AVPC500WValue(Double value): AVPC500WValue
++ toString(): String
+
+}
+
+class DeviceId{
+- _id: String
+# DeviceId(String id): DeviceId
++ equals (object : Object): boolean
++ hashCode(): int
++ toString(): String
+}
+
+class SensorModelId{
+- _id: String
+# SensorModelId(String id): SensorModelId
++ equals (object : Object): boolean
++ toString(): String
+}
+
+class SensorId{
+- _id: String
+# SensorId(String id): SensorId
++ equals (object : Object): boolean
++ toString(): String
+}
+
+@enduml

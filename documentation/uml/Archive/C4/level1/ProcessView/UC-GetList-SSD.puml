@@ -1,0 +1,20 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+participant "<<system>> \nSmartHome" as SmartHome
+
+
+[o-> SmartHome: GET /X
+
+note right
+  Get list of X.
+  X can represent rooms, devices,
+  sensors, actuators or sensor readings
+end note
+
+[o<-- SmartHome: 200 - OK + body
+
+
+@enduml

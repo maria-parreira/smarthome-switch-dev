@@ -1,0 +1,52 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+
+class WS8600
+class WS8600Value
+interface Sensor
+interface Value
+
+
+WS8600 -- WS8600Value : uses >
+WS8600 ..|> Sensor : implements
+WS8600Value ..|> Value : implements
+
+
+
+class WS8600{
+
+- _sensorType : SensorType
+- _value : WS8600Value
+- _data : Map<Integer, List<Double>>
++WS8600 (Catalogue catalogue)
++getSensorType(): SensorType
++setData(): Map <Integer, List<Double>>
++setValue (Integer readingNumber): void
++getValue(): Value
+
+
+}
+
+
+class WS8600Value{
+
+- _speed: double
+- _direction: double
+- isDirectionValid(double direction):boolean
+- isSpeedValid(double speed): boolean
++WS8600Value(double speed, double direction): WS8600Value
++getSpeed(): double
++getDirection(): double
++radiansToCardinal (double direction): String
++toString(): String
+}
+
+interface Value {
+}
+
+interface Sensor {
++getSensorType(): SensorType
+}
+
+@enduml

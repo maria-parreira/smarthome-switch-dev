@@ -1,0 +1,59 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title <font color=#800020> UC36: Get the peak power consumption of the house, in a given period </font>
+
+autonumber
+[o-> ":HouseWebController" ++:GetHousePeakConsumptionWithinPeriod(houseId,startTime,endTime, interval)
+":HouseWebController" -> ":HouseMapper" ++: DTOToHouseId(houseId)
+":HouseMapper" --> ":HouseWebController" --: houseId
+deactivate ":HouseMapper"
+":HouseWebController" -> ":ServiceDevice" ++: getPowerGridMeter()
+":ServiceDevice" -> ":RepositoryDevice" ++: findAll()
+":RepositoryDevice" --> ":ServiceDevice" --: devices
+ note right of ":ServiceDevice"
+                All devices in the repository are obtained and, if it exits, the device with PowerGridMeter name is returned
+                It is then verified whether that device is located in the provided House.
+            end note
+":ServiceDevice" --> ":HouseWebController" --: PowerGridMeter
+":HouseWebController" -> ":ServiceRoom" ++: isPowerGridMeterInHouse(houseId, powerGridMeterRoomID)
+":ServiceRoom" --> ":HouseWebController" --:
+
+
+loop interval : intervals
+":HouseWebController" -> ":ServiceSensorReading" ++ : calculateHousePeakPowerConsumptionWithinPeriod(powerGridMeter, startTime, endTime, interval)
+
+
+
+":ServiceSensorReading" --> ":ServiceDevice"  : calculatePowerConsumptionWithinInterval(devicesOfType, start, end, intervalInMinutes)
+
+
+ note right of ":ServiceDevice"
+                The method gives a sum of the average PowerConsumption in all devices within an interval.
+            end note
+
+loop device : devices
+
+":ServiceDevice" -> ":RepositorySensorReading" ++: getAverageReadingsWithinInterval(Start, End);
+ note left of ":RepositorySensorReading"
+                This average is relative to each PowerConsumption Sensor in the device.
+                end note
+":RepositorySensorReading" --> ":ServiceDevice" --: deviceAverageReadings
+
+end loop
+
+":ServiceSensorReading" --> ":ServiceSensorReading" : powerConsumptionReadingsInInterval
+
+end loop
+
+":ServiceSensor" --> ":HouseWebController" --: peakConsumptionWithinPeriod
+":HouseWebController" -> ":SensorReadingMapper" ++: peakPowerConsumptionDomainToWebDTO(peakPowerConsumption)
+":SensorReadingMapper" --> ":HouseWebController" --: peakPowerConsumptionWithinPeriodWebDTO
+
+
+[o<--":HouseWebController" -- : peakConsumptionWithinPeriodWebDTO
+
+
+
+
+@enduml

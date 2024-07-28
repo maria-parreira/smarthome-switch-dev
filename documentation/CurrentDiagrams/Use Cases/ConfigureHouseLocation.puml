@@ -1,0 +1,12 @@
+@startuml
+'https://plantuml.com/use-case-diagram
+
+left to right direction
+
+Actor Administrator as admin
+
+usecase "UC01: Configure house location" as UC1
+
+admin --> UC1
+
+@endumlduml

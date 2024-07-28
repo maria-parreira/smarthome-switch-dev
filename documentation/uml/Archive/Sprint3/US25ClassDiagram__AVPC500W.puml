@@ -1,0 +1,36 @@
+@startuml AVPC500W_Class_Diagram
+
+class AVPC500W {
+    - _sensorType: SensorType
+    - _sensorData: Map<LocalTime, Double>
+    - _sensorReadings: List<Double>
+    - _value: AVPC500WValue
+    + AVPC500W(SensorCatalogue: SensorCatalogue)
+    + getSensorType(): SensorType
+    + addPowerReading(singleReading: Double): boolean
+    + getReadingsWithinPeriod(start: LocalTime, end: LocalTime): List<Double>
+    + getValue(start: LocalTime, end: LocalTime): Value
+}
+
+interface Sensor {
+    + getSensorType: SensorType
+}
+
+interface Value {
+}
+
+class AVPC500WValue {
+    - _nValue: Double
+    + AVPC500WValue(Double nValue): Value
+    - areConstructorArgumentsValid(Double nValue): boolean
+    + toString(): String
+}
+
+
+AVPC500W ..|> Sensor : implements
+AVPC500W -- AVPC500WValue : uses >
+AVPC500WValue ..|> Value : implements
+
+
+
+@enduml

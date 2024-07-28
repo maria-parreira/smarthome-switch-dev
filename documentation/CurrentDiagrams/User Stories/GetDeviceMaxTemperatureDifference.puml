@@ -1,0 +1,50 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title <font color=#800020>UC34: Maximum instantaneous temperature difference between a device in the room and the outside, in a given period</font>
+
+autonumber
+
+participant ":GetMaxTemperatureDifferenceController"
+participant ":SensorReadingMapper"
+participant "deviceID :DeviceID"
+participant "sensorIDIndoors :SensorID"
+participant "sensorIDOutdoors :SensorID"
+participant ":SensorReadingService"
+participant ":IRepositorySensorReading"
+participant ":IRepositorySensor"
+participant "sensor :Sensor"
+
+
+[o-> ":GetMaxTemperatureDifferenceController" ++ : getMaxTemperatureDifferenceController(sensorReadingDTO)
+":GetMaxTemperatureDifferenceController" -> ":SensorReadingMapper" ++ : createDeviceID(sensorReadingDTO.getDeviceID())
+":SensorReadingMapper" -> "deviceID :DeviceID" ++ : DeviceID(deviceID)
+"deviceID :DeviceID" --> ":SensorReadingMapper" -- : deviceID
+":SensorReadingMapper" --> ":GetMaxTemperatureDifferenceController" -- : deviceID
+":GetMaxTemperatureDifferenceController" -> ":SensorReadingMapper" ++ : createSensorID(sensorReadingDTO.getSensorIDIndoors())
+":SensorReadingMapper" -> "sensorIDIndoors :SensorID" ++: SensorID(sensorID)
+
+"sensorIDIndoors :SensorID" --> ":SensorReadingMapper" -- : sensorIDIndoors
+":SensorReadingMapper" --> ":GetMaxTemperatureDifferenceController" -- : sensorIDIndoors
+
+":GetMaxTemperatureDifferenceController" -> ":SensorReadingMapper" ++ : createSensorID(sensorReadingDTO.getSensorIDOutdoors())
+":SensorReadingMapper" -> "sensorIDOutdoors :SensorID" ++ : SensorID(sensorID)
+"sensorIDOutdoors :SensorID" --> ":SensorReadingMapper" -- : sensorIDOutdoors
+":SensorReadingMapper" --> ":GetMaxTemperatureDifferenceController" -- : sensorIDOutdoors
+
+":GetMaxTemperatureDifferenceController" -> ":SensorReadingService" ++ : getSensorReading(deviceID, sensorIDIndoors, startTime, endTime)
+":SensorReadingService" -> ":IRepositorySensorReading" ++ : getSensorReading(deviceID, sensorIDIndoors, startTime, endTime)
+":IRepositorySensorReading" --> ":SensorReadingService" -- : readings
+
+":SensorReadingService" -> ":IRepositorySensor" ++ : ofIdentity(sensorIDOutdoors)
+":IRepositorySensor" --> ":SensorReadingService" -- : sensor
+":SensorReadingService" -> "sensor :Sensor" ++ : getValue()
+"sensor :Sensor" --> ":SensorReadingService" -- : outsideTemperature
+
+":SensorReadingService" -> ":SensorReadingService" : getMaxDifference(readings, outsideTemperature)
+":SensorReadingService" --> ":GetMaxTemperatureDifferenceController" -- : maxDifference
+
+[o<-- ":GetMaxTemperatureDifferenceController" -- : maxDifference
+
+
+@enduml

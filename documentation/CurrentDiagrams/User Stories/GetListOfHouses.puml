@@ -1,0 +1,44 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+
+title <font color=#800020> Get List of Houses</font>
+
+autonumber
+
+participant ":GetListOfHousesController"
+participant ":ServiceHouse"
+participant ":IRepositoryHouse"
+participant ":HouseMapper"
+
+
+[o-> ":GetListOfHousesController" : getHouses()
+activate ":GetListOfHousesController"
+
+":GetListOfHousesController"->":ServiceHouse" :  getHouses()
+activate ":ServiceHouse"
+
+":GetListOfHousesController"->":IRepositoryHouse" : listOfHouses()
+activate ":IRepositoryHouse"
+
+":IRepositoryHouse"->":IRepositoryHouse" : findAll()
+
+":IRepositoryHouse"-->":ServiceHouse" : houses
+deactivate ":IRepositoryHouse"
+
+":ServiceHouse"-->":GetListOfHousesController" : houses
+deactivate ":ServiceHouse"
+
+loop for each house in houses
+
+":GetListOfHousesController"->":HouseMapper" : housesListToDTO (houses)
+activate ":HouseMapper"
+
+":HouseMapper"-->":GetListOfHousesController" : housesDTO
+deactivate ":HouseMapper"
+
+end
+
+[o<--":GetListOfHousesController" : housesDTO
+deactivate ":GetListOfHousesController"
+@enduml

@@ -1,0 +1,28 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+!pragma teoz true
+
+
+box "<<container>> \n  :Backend"
+    participant " <<component>> \n :Server" as Server
+    participant " <<component>> \n :BD" as BD
+end box
+
+
+[o-> Server: GET /X
+
+note right
+  Get list of X.
+  X can represent rooms, devices,
+  sensors, actuators or sensor readings
+end note
+
+Server -> BD : query
+BD --> Server : list<xDataModel>
+[o<-- Server: 200 - OK + body
+
+
+
+@enduml

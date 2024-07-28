@@ -1,0 +1,21 @@
+@startuml
+'https://plantuml.com/use-case-diagram
+
+left to right direction
+
+Actor Administrator as admin
+Actor PowerUser as pw
+Actor RoomOwner as ro
+
+
+usecase "UC06: Access list of devices" as UC6
+usecase "UC08: Deactivate device" as UC8
+
+UC8 --> UC6 #line.dashed : <<includes>>
+
+
+ro --> UC8
+admin --> UC8
+pw --> UC8
+
+@enduml

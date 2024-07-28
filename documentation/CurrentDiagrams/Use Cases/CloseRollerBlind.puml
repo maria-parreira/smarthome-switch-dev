@@ -1,0 +1,24 @@
+@startuml
+'https://plantuml.com/use-case-diagram
+
+'left to right direction
+
+Actor Administrator as admin
+Actor PowerUser as pw
+Actor RoomOwner as ro
+
+usecase "UC37: Close Roller Blind" as UC37
+usecase "UC06: Access list of devices in room" as UC06
+usecase "Access list of sensors and actuators in device" as UC99
+usecase "UC03: Access list of rooms" as UC03
+
+admin --> UC37
+pw --> UC37
+ro --> UC37
+UC37 --> UC99 #line.dashed : <<includes>>
+UC99 --> UC06 #line.dashed : <<includes>>
+UC06 --> UC03 #line.dashed : <<includes>>
+
+
+
+@enduml

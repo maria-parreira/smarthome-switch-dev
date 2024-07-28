@@ -1,0 +1,60 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title US06: List All Devices In a Room
+
+autonumber
+
+participant ":US06ListDevicesInRoomController"
+participant ":RoomMapper"
+participant ":RepositoryDevice"
+
+[o->":US06ListDevicesInRoomController" : listDevicesInRoom(roomDTO)
+activate ":US06ListDevicesInRoomController"
+
+":US06ListDevicesInRoomController"->":RoomMapper" : DTOToRoomId(roomDTO.getRoomId())
+activate ":RoomMapper"
+
+":RoomMapper" -> "roomId :RoomId" ** : RoomId(roomDTO.getRoomId())
+activate "roomId :RoomId"
+"roomId :RoomId" --> ":RoomMapper" : roomId
+deactivate "roomId :RoomId"
+
+":RoomMapper"-->":US06ListDevicesInRoomController" : roomId
+deactivate ":RoomMapper"
+
+":US06ListDevicesInRoomController"->":RepositoryDevice" : getDevicesInRoom(roomId)
+activate ":RepositoryDevice"
+
+":RepositoryDevice" -> ":RepositoryDevice" : findAll()
+
+loop for each device in all devices
+":RepositoryDevice" -> ":RepositoryDevice" : device.getRoomId().equals(roomId)
+
+note right
+If roomId is equal to roomId provided,
+device is added to list
+end note
+
+":RepositoryDevice" -> ":RepositoryDevice" : devicesInRoom.add(device)
+end
+
+":RepositoryDevice"-->":US06ListDevicesInRoomController" : devicesInRoom
+deactivate ":RepositoryDevice"
+
+
+loop for each device in devicesInRoom
+
+":US06ListDevicesInRoomController"->":DeviceMapper": devices_DomainToDTO(devicesInRoom)
+activate ":DeviceMapper"
+
+":DeviceMapper"-->":US06ListDevicesInRoomController" : devicesInRoomDTO
+deactivate ":DeviceMapper"
+
+end
+
+[o<--":US06ListDevicesInRoomController" : devicesInRoomDTO
+deactivate ":US06ListDevicesInRoomController"
+
+
+@enduml

@@ -1,0 +1,74 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+box "SmartHome"
+    box " <<component>> \n     :Server"
+        participant ":Router"
+        participant ":Controller"
+        participant ":Mapper"
+        participant "vo :VO"
+        participant ":Service"
+        participant ":YRepository"
+        participant ":XRepository"
+        participant "xDM1 :XDataModel"
+        participant ":Factory"
+        participant "xObject :XDomainClass"
+        participant ":Driver"
+        participant "xObjectDTO :DTO"
+    endbox
+end box
+
+
+
+[o-> ":Router": POST /X
+":Router" -> ":Controller": addX()
+note right
+  Add X.
+  X can represent room, device, sensor, sensor type or actuator
+end note
+":Controller" -> ":Mapper" : create VO()
+note left
+  createVO() can be called
+  several times according
+  to the requested X
+end note
+":Mapper" -> "vo :VO" **:  new VO()
+":Mapper" <-- "vo :VO": vo
+":Mapper" --> ":Controller": vo
+":Controller" -> ":Service": addX()
+
+":Service" -> ":YRepository": containsOfIdentity(YId)
+note right
+  containsOfIdentity() verifies that object with provided id exists
+  Y can represent different objects according to implementation
+end note
+":YRepository" --> ":Service": true
+
+":Service" -> ":Factory": createX()
+":Factory" -> "xObject :XDomainClass" **: new X()
+"xObject :XDomainClass" --> ":Factory" : xObject
+":Factory" --> ":Service" : xObject
+
+":Service" -> ":XRepository": save(xObject)
+
+":XRepository" -> "xDM1 :XDataModel" **: new XDataModel(xObject)
+":XRepository" <-- "xDM1 :XDataModel" : xDM1
+
+":XRepository" -> ":Driver": save(xDM1)
+":Driver" ->o] : insert(xDM1)
+":Driver" <--o] : xDM1
+":Driver" --> ":XRepository" :  xDM1
+
+":XRepository" --> ":Service": xObject
+":Service" --> ":Controller": xObject
+
+":Controller" -> "xObjectDTO :DTO": domainToWebDTO(xObject)
+"xObjectDTO :DTO" --> ":Controller" :xObjectDTO
+":Controller" --> ":Router": 201 - CREATED + body
+[o<--":Router": 201 - CREATED + body
+
+
+
+@enduml

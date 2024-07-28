@@ -1,0 +1,74 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+package "Actuator Model Aggregate" {
+
+ImplFactoryActuatorModel "1" ..|> "1" FactoryActuatorModel : implements >
+"ImplFactoryActuatorModel" "1" -- "1" "ActuatorModel" : > creates
+"ActuatorModel" "1" -- "1" "ModelName" : > has
+"ActuatorModel" "1" -- "1" "ActuatorModelID" : > has
+"DomainID" "1"  <|.. "1" "ActuatorModelID" : < implements
+"AggregateRoot" "1" <|.. "1" "ActuatorModel" : < implements
+"ModelName" "1" ..|> "1" "ValueObject" : > implements
+ActuatorModel "*" -- "1" RepoActuatorModel : uses >
+RepoActuatorModel "1" ..|> "1" RepoInterface : implements >
+
+
++class ImplFactoryActuatorModel{
+createActuatorModel(modelName,actuatorModelID) : ActuatorModel
+}
+
++interface FactoryActuatorModel{
+createActuatorModel(modelName, actuatorModelID) : ActuatorModel
+}
+
++class ActuatorModel {
+- modelName: ModelName
+- actuatorModelID: ActuatorModelID
+- actuatorTypeID: ActuatorTypeID
++ ActuatorModel(modelName, actuatorModelID, actuatorTypeID) :ActuatorModel
++ identity(object Object) ActuatorModelID
++ sameAs() boolean
+}
+
++class ModelName{
+- modelName : String
++ ModelName(modelName) : ModelName
+- isActuatorModelNameValid(modelName): boolean
++ equals(object Object) boolean
++ toString() String
+}
+
++class ActuatorModelID{
+- ActuatorModelID: String
++ ActuatorModelID (actuatorModelID): ActuatorModelID
++ equals(object Object) boolean
++ toString()
+}
+
++interface DomainID{
+}
+
++interface ValueObject{
+}
+
++interface AggregateRoot{
+}
+
++class RepoActuatorModel{
+- listOfActuatorModel: List <ActuatorModel>
++ save(ActuatorModel) : ActuatorModel
++ findAll()
++ ofIdentity(id) : ActuatorModel
++ containsOfIdentity(id) : boolean
+}
+
++interface RepoInterface{
++ generateModelList(filepathName) String[]
++ save() : T
++ findAll() : T
++ ofIdentity() : T
++ containsOfIdentity() : T
+}
+
+@enduml

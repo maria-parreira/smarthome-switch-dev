@@ -1,0 +1,102 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+title <font color=#800020> UC36: Get the peak power consumption of the house, in a given period </font>
+
+
+'left to right direction
+
+class HouseWebController
+class ServiceSensorReading
+class ServiceHouse
+interface IRepositoryHouse
+class ServiceDevice
+interface IRepositoryDevice
+class PeakPowerConsumptionWebDTO
+class HouseMapper
+
+
+HouseWebController --> ServiceHouse : uses >
+HouseWebController --> ServiceSensorReading : uses >
+HouseWebController --> ServiceDevice : uses >
+HouseWebController --> HouseMapper : uses >
+HouseWebController --> ServiceRoom : uses >
+ServiceHouse --o IRepositoryHouse : has >
+ServiceDevice --o IRepositoryDevice : has >
+ServiceRoom --o IRepositoryRoom: has >
+HouseMapper --o PeakPowerConsumptionWebDTO : uses >
+
+class HouseWebController {
+- serviceHouse  : ServiceHouse
+- serviceRoom   : ServiceRoom
+- serviceDevice  : ServiceDevice
+- serviceSensorReading  : ServiceSensorReading
++ HouseWebController(ServiceHouse serviceHouse, ServiceRoom serviceRoom, ServiceDevice serviceDevice, ServiceSensorReading serviceSensorReading): HouseWebController
++ getHousePeakPowerConsumptionWithinPeriod(String id, String start,String end, String interval): ResponseEntity<PeakPowerConsumptionWebDTO>
+}
+
+class ServiceSensorReading {
+- repositorySensorReading : IRepositorySensorReading
+- repositorySensor : IRepositorySensor
++ ServiceSensorReading(IRepositorySensorReading repositorySensorReading, IRepositorySensor repositorySensor)
++ getDevicesBySensorModel(String sensorModelId) : List<DeviceId>
++ calculateHousePeakPowerConsumptionWithinPeriod(Device powerGridMeter, Timestamp startTime, Timestamp endTime, long intervalInMinutes) : double
+- calculatePeakPowerConsumptionWithinPeriod(List<DeviceId> devices, Timestamp startTime, Timestamp endTime, long intervalInMinutes) : double
+- calculateAveragePowerConsumptionOnInterval(List<DeviceId> devices, Timestamp startTime, Timestamp endTime, long intervalInMinutes, int intervalIndex) : double
+- addMinutesToTimestamp(Timestamp timestamp, long minutes) : Timestamp
+- getDevicesAverageReadingsWithinInterval(List<DeviceId> devices, Timestamp startTime, Timestamp endTime) : double
+- getAverageReadingsWithinInterval(DeviceId deviceID, Timestamp start, Timestamp end)  : double
+}
+
+class ServiceDevice {
+- repositoryDevice : IRepositoryDevice
+- repositoryRoom : IRepositoryRoom
+- factoryDevice : FactoryDevice
++ ServiceDevice( IRepositoryDevice repositoryDevice, IRepositoryRoom repositoryRoom, FactoryDevice factoryDevice) : ServiceDevice
++ getPowerGridMeter(DeviceId id)  : Device
++ getPowerGridMeterDevice(deviceId: DeviceId, id: RoomId) : Device
+
+}
+
+class ServiceHouse {
+- repoHouse : IRepositoryHouse
+- factoryHouse : FactoryHouse
++ ServiceHouse(repoHouse: IRepositoryHouse, factoryHouse: FactoryHouse) :  ServiceHouse
++ verifyHouseId(id: HouseId) : boolean
++ setUpPowerGridMeterHouse(id: HouseId): House
+}
+
+class ServiceRoom {
+    -factoryRoom: FactoryRoom
+    -repositoryRoom: IRepositoryRoom
+    -repositoryHouse: IRepositoryHouse
+    +ServiceRoom(factoryRoom: FactoryRoom, repositoryRoom: IRepositoryRoom, repositoryHouse: IRepositoryHouse)
+    +setUpPowerGridMeterRoom(houseId: HouseId, id: RoomId): Room
+
+
+}
+
+class PeakPowerConsumptionWebDTO {
+- peakPowerConsumption : String
++ PeakPowerConsumptionDTO(String peak) :  PeakPowerConsumptionWebDTO
++ getPeakPowerConsumption() : String 
+}
+
+class HouseMapper {
++ peakPowerConsumptionDomainToWebDTO(double peakPowerConsumption) : PeakPowerConsumptionWebDTO
+
+}
+
+interface IRepositoryHouse {
+containsOfIdentity(ID id) : boolean
+
+}
+
+interface IRepositoryDevice {
+ofIdentity(ID id) :  Optional<Device>
+}
+interface IRepositoryRoom {
+    ofIdentity(ID id) : Optional<Room>
+
+}
+@enduml

@@ -1,0 +1,32 @@
+.back-button {
+    background: #ffffff;
+    border: none;
+    color: black; /* White text */
+    font-family: Poppins;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    padding: 10px 20px; /* Padding around the text */
+    border-radius: 30px; /* Rounded corners */
+    transition: background-color 0.5s ease; /* transition effect */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.back-button:hover {
+    transition: background-color 0.5s ease; /* transition effect */
+    background-color: #0056b3;
+}
+
+
+@media screen and (max-width: 568px) {
+    .back-button {
+        top: 15px;
+        left: 15px;
+        font-size: 16px;
+        padding: 8px 10px;
+    }
+}

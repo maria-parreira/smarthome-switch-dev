@@ -1,0 +1,33 @@
+.device-card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    text-align: center;
+    transition: transform 0.2s;
+    width: 200px; /* Adjust the width as needed */
+    margin: 20px; /* Adjust the margin as needed */
+}
+
+.device-card:hover {
+    transform: translateY(-10px);
+}
+
+.device-image {
+    width: 100%;
+    object-fit: cover;
+}
+
+.device-info {
+    padding: 45px;
+}
+
+.device-info h2 {
+    font-family: Poppins;
+    font-size: normal;
+    margin-bottom: 10px;
+}
+
+.device-info p {
+    color: #666;
+}

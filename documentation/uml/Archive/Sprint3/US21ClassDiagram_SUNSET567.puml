@@ -1,0 +1,32 @@
+@startuml SUNSET567_Class_Diagram
+
+class SUNSET567 {
+    - _sensorType: SensorType
+    - _data: Map<LocalDate,Map<GPSCoordinates,LocalTime>>
+    - _value: SUNSET567Value
+    + SUNSET567(sensorCatalogue: SensorCatalogue)
+    - setData(): Map<LocalDate,Map<GPSCoordinates,LocalTime>>
+    + getValue(date: LocalDate , gps: GPSCoordinates): Value
+    - boolean areArgumentsInMap(date: LocalDate, gps: GPSCoordinates): boolean
+    + getSensorType(): SensorType
+}
+
+interface Sensor {
+    + getSensorType: SensorType
+}
+
+interface Value {
+}
+
+class SUNSET567Value {
+    + SUNSET567Value(instant: LocalTime)
+    - areConstructorArgumentsValid(instant: LocalTime)
+    - _iValue: Timestamp
+    + toString(): String
+}
+
+SUNSET567 ..|> Sensor : implements
+SUNSET567 -- SUNSET567Value : uses >
+SUNSET567Value ..|> Value : implements
+
+@enduml

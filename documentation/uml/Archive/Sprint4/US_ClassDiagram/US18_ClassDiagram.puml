@@ -1,0 +1,90 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+Sensor_Value --|> Sensor : extends >
+DomainId --|> ValueObject : extends >
+CAP200 ..|> Sensor_Value : implements >
+CAP200 ..|> AggregateRoot : implements >
+CAP200Value ..|> ValueObject : implements >
+CAP200Value ..|> Value : implements >
+DeviceId ..|> DomainId : implements >
+SensorId ..|> DomainId : implements >
+SensorModelId ..|> DomainId : implements >
+CAP200 -- CAP200Value : uses >
+CAP200 -- DeviceId : contains >
+CAP200 -- SensorId : contains >
+CAP200 -- SensorModelId : contains >
+AggregateRoot --|> DomainEntity : extends >
+
+interface DomainEntity{
+}
+
+interface ValueObject{
+}
+
+interface DomainId {
+}
+
+interface Sensor{
+}
+
+interface Sensor_Value{
++ getValue()
+}
+
+interface AggregateRoot{
+}
+
+interface Value{
+}
+
+class CAP200{
+- _sensorValue: CAP200Value
+- _sensorID: SensorId
+- _deviceID: DeviceId
+- _sensorModelID: SensorModelId
+- _sensorData: Map <Integer, Integer>
+
+# CAP200(device id: Device id, sensorModelID: SensorModelID, sensorID:SensorId): CAP200
+- areConstructorArgumentsValid(sensorID: SensorID, deviceID: DeviceID, sensorModelID: SensorModelID): boolean
++ identity(): SensorId
++ sameAs (object : Object): boolean
++ equals (object : Object): boolean
+- setData(): Map <Integer, Integer>
++ setValue(Integer readingNumber): void
++ getValue(): Value
+}
+
+
+class CAP200Value {
+
+- _capacityValue: Integer
+# CAP200Value ( value): CAP200Value
++ areConstructorArgumentsValid(Integer capacityValue): boolean
++ toString(): String
+}
+
+class DeviceId{
+- _id: String
+# DeviceId(String id): DeviceId
++ equals (object : Object): boolean
++ hashCode(): int
++ toString(): String
+}
+
+class SensorModelId{
+- _id: String
+# SensorModelId(String id): SensorModelId
++ equals (object : Object): boolean
++ toString(): String
+}
+
+class SensorId{
+- _id: String
+# SensorId(String id): SensorId
++ equals (object : Object): boolean
++ toString(): String
+}
+
+
+@enduml

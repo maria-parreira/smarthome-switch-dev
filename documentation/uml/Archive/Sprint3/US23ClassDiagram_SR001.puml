@@ -1,0 +1,37 @@
+@startuml  SR001_Class_Diagram
+
+class SR001 {
+  - _sensorType: SensorType
+  - _readings: Map<Integer, Double>
+  - _value: SR001Value
+  + SR001(SensorCatalogue)
+  + getSensorType(): SensorType
+  + getReadings(): Map<Integer, Double>
+  + getValue(): SR001Value
+
+}
+
+interface Sensor  {
+  + getSensorType(): SensorType
+}
+
+interface Value {
+}
+
+class SR001Value {
+    - _value: Double
+
+    - areConstructorArgumentsValid(Double nValue): Boolean
+    + SR001Value(Double nValue): Value
+    + toString(): String
+}
+
+
+SR001 ..|> Sensor : implements
+SR001 -- SR001Value : uses >
+SR001Value ..|> Value : implements
+
+
+
+
+@enduml

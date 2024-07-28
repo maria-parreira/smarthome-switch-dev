@@ -1,0 +1,118 @@
+  @startuml
+'https://plantuml.com/sequence-diagram
+
+!theme mars
+title <font color=#800020>US12: Add an actuator to an existing device in a room</font>
+
+autonumber
+
+participant ":US12AddActuatorToRoomController"
+participant ":ActuatorMapper"
+participant ":DeviceMapper"
+participant ":ActuatorID"
+participant ":DeviceID"
+participant ":ActuatorModelMapper"
+participant ":ActuatorModelID"
+participant ":Value"
+participant ":ActuatorRepository"
+participant ":implFactoryActuator"
+participant ":Actuator"
+
+
+[o-> ":US12AddActuatorToRoomController" : addActuatorToDevice(entryDTO)
+activate ":US12AddActuatorToRoomController"
+
+
+":US12AddActuatorToRoomController" -> ":ActuatorMapper" ++ : convertToActuatorID(entryDTO.getActuatorID())
+
+note left
+The String values of DeviceID, ActuatorModelID and modelName
+were verified in previous controllers.
+Those are considered correct and without need of verification.
+New data introduced by the user is ActuatorID and Value,
+which are verified and created along this method.
+end note
+
+":ActuatorMapper" -> ":ActuatorID" ** : ActuatorID(entryDTO.getActuatorID())
+activate ":ActuatorID"
+":ActuatorMapper" <-- ":ActuatorID" : myActuatorID
+deactivate ":ActuatorID"
+":US12AddActuatorToRoomController" <-- ":ActuatorMapper" : myActuatorID
+deactivate ":ActuatorMapper"
+
+":US12AddActuatorToRoomController" -> ":DeviceMapper" ++ : DTOToDeviceId(entryDTO.getDeviceID())
+":DeviceMapper" -> ":DeviceID" ** : DeviceID(entryDTO.getDeviceID())
+activate ":DeviceID"
+":DeviceMapper" <-- ":DeviceID" : myDeviceID
+deactivate ":DeviceID"
+":US12AddActuatorToRoomController" <-- ":DeviceMapper" : myDeviceID
+deactivate ":DeviceMapper"
+
+":US12AddActuatorToRoomController" -> ":ActuatorModelMapper" ++ : convertToActuatorModelID(entryDTO.getActuatorModelID())
+":ActuatorModelMapper" -> ":ActuatorModelID" ** : ActuatorModelID(entryDTO.getActuatorModelID())
+activate ":ActuatorModelID"
+":ActuatorModelMapper" <-- ":ActuatorModelID" : myActuatorModelID
+deactivate ":ActuatorModelID"
+":US12AddActuatorToRoomController" <-- ":ActuatorModelMapper" : myActuatorModelID
+deactivate ":ActuatorModelMapper"
+
+":US12AddActuatorToRoomController" -> ":US12AddActuatorToRoomController"  : entryDTO.getActuatorModelName()
+
+":US12AddActuatorToRoomController" -> ":ActuatorMapper" ++ : convertToValue(entryDTO.getActuatorValue(),modelName)
+
+note left
+The ActuatorMapper will create
+the specific Value VO relative to
+the modelName that describes the class name.
+
+Example:
+ModelName=OPNCL0100
+will attempt to create
+Value=OPNCL0100Value.class
+end note
+
+":ActuatorMapper" -> ":Value" ** : Value(entryDTO.getActuatorValue())
+activate ":Value"
+
+
+
+":ActuatorMapper" <-- ":Value" : myValue
+deactivate ":Value"
+":US12AddActuatorToRoomController" <-- ":ActuatorMapper" : myValue
+deactivate ":ActuatorMapper"
+
+
+
+
+":US12AddActuatorToRoomController" -> ":implFactoryActuator" ++ : createActuator(myActuatorID,myActuatorName,myActuatorModel)
+":implFactoryActuator" -> ":Actuator" ** : Actuator(myActuatorID,myActuatorName,myActuatorModel)
+activate ":Actuator"
+":implFactoryActuator" <-- ":Actuator" : myActuator
+
+note left
+The ImplFactoryActuator will create
+the specific Actuator relative to
+the modelName that describes the class name.
+
+Example:
+ModelName=OPNCL0100
+will attempt to create
+Actuator=OPNCL0100.class
+end note
+
+deactivate ":Actuator"
+":US12AddActuatorToRoomController" <-- ":implFactoryActuator" : myActuator
+deactivate ":implFactoryActuator"
+
+":US12AddActuatorToRoomController" -> ":ActuatorRepository" ++ : save(myActuator)
+":US12AddActuatorToRoomController" <-- ":ActuatorRepository" : myActuator
+deactivate ":ActuatorRepository"
+
+":US12AddActuatorToRoomController" -> ":ActuatorMapper" ++ : domainToDTO(myActuator)
+":US12AddActuatorToRoomController" <-- ":ActuatorMapper" : myActuatorDTO
+deactivate ":ActuatorMapper"
+
+[o<-- ":US12AddActuatorToRoomController" : myActuatorDTO
+deactivate ":US12AddActuatorToRoomController"
+
+@enduml

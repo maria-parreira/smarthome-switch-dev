@@ -1,0 +1,75 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title <font color=#800020>UC6: List All Devices In a Room</font>
+
+autonumber
+
+participant ":ListDevicesInRoomController"
+participant ":RoomMapper"
+participant "roomId :RoomId"
+participant ":ServiceDevice"
+participant ":IRepositoryDevice"
+
+[o->":ListDevicesInRoomController" : listDevicesInRoom(strRoomID)
+activate ":ListDevicesInRoomController"
+
+":ListDevicesInRoomController"->":RoomMapper" : DTOToRoomId(strRoomID)
+activate ":RoomMapper"
+
+":RoomMapper" -> "roomId :RoomId" ** : RoomId(strRoomID)
+activate "roomId :RoomId"
+
+"roomId :RoomId" --> ":RoomMapper" : roomId
+deactivate "roomId :RoomId"
+
+":RoomMapper"-->":ListDevicesInRoomController" : roomId
+deactivate ":RoomMapper"
+
+":ListDevicesInRoomController" -> ":ServiceDevice" : getDevicesInRoom(roomId)
+activate ":ServiceDevice"
+
+note left
+Assuming roomId exists
+in Repository Room
+end note
+
+":ServiceDevice"->":IRepositoryDevice": getDevicesInRoom(roomId)
+activate ":IRepositoryDevice"
+
+":IRepositoryDevice" -> ":IRepositoryDevice" : findAll()
+
+loop for each device in all devices
+":IRepositoryDevice" -> ":IRepositoryDevice" : device.getRoomId().equals(roomId)
+
+note right
+If roomId is equal to roomId provided,
+device is added to list
+end note
+
+":IRepositoryDevice" -> ":IRepositoryDevice" : devicesInRoom.add(device)
+end
+
+":IRepositoryDevice"-->":ServiceDevice" : devicesInRoom
+deactivate ":IRepositoryDevice"
+
+":ServiceDevice"-->":ListDevicesInRoomController" : devicesInRoom
+deactivate ":ServiceDevice"
+
+loop for each device in devicesInRoom
+
+
+":ListDevicesInRoomController"->":DeviceMapper": devices_DomainToDTO(devicesInRoom)
+activate ":DeviceMapper"
+
+
+":DeviceMapper"-->":ListDevicesInRoomController" : devicesInRoomDTO
+deactivate ":DeviceMapper"
+
+end
+
+[o<--":ListDevicesInRoomController" : devicesInRoomDTO
+deactivate ":ListDevicesInRoomController"
+
+
+@enduml

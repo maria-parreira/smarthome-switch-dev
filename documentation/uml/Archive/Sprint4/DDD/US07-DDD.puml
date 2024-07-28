@@ -1,0 +1,74 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+!theme mars
+skinparam sequenceMessageAlign direction
+autonumber
+
+title <font color=#800020> US07 : I want to add a sensor to an existing device in a room. The sensor must be of a model of an existing type of sensor.
+
+[o-> ":US07addSensorToExistingDeviceController" ++ : addSensorToExistingDevice(strDeviceID, strModelNameID)
+activate ":US07addSensorToExistingDeviceController"
+
+
+":US07addSensorToExistingDeviceController" -> ":Mapper" : DTOToDeviceId(strDeviceID)
+note left: The string values of DeviceID and SensorModelID were verified in previous controllers. \n New data introduced by the user is SensorID and the string SensorModelName, \n which are verified and created along this method.
+
+activate ":Mapper"
+":Mapper" -> "myDeviceID :DeviceId" ** : DeviceId (strDeviceID)
+activate "myDeviceID :DeviceId"
+
+"myDeviceID :DeviceId" --> ":Mapper" : deviceId
+deactivate "myDeviceID :DeviceId"
+":Mapper" --> ":US07addSensorToExistingDeviceController" : deviceId
+deactivate ":Mapper"
+
+
+":US07addSensorToExistingDeviceController" -> ":Mapper" : DTOToSensorModelID(strSensorModelID)
+
+activate ":Mapper"
+":Mapper" -> "myModelNameID :ModelNameID" ** : ModelNameId (strSensorModelID)
+activate "myModelNameID :ModelNameID"
+"myModelNameID :ModelNameID" --> ":Mapper" : sensorModelID
+deactivate "myModelNameID :ModelNameID"
+":Mapper" --> ":US07addSensorToExistingDeviceController" : sensorModelID
+deactivate ":Mapper"
+
+":US07addSensorToExistingDeviceController" -> ":ServiceSensor": createNewSensor(sensorID, String sensorModelName)
+activate ":ServiceSensor"
+
+
+":ServiceSensor" -> ":ImplFactorySensor" : createNewSensor(sensorID, String sensorModelName)
+activate ":ImplFactorySensor"
+
+":ImplFactorySensor" -> ":mySensor :Sensor" ** : createNewSensor(sensorID, String sensorModelName)
+activate ":mySensor :Sensor"
+":mySensor :Sensor" --> ":ImplFactorySensor" :mySensor
+deactivate ":mySensor :Sensor"
+
+":ImplFactorySensor" --> ":ServiceSensor" :mySensor
+deactivate ":ImplFactorySensor"
+
+
+":ServiceSensor" -> ":RepoSensor" : save(mySensor)
+note left: Before saving, it confirms through containsOfIdentity \n if the sensor already exists.
+
+activate ":RepoSensor"
+":RepoSensor" --> ":ServiceSensor" :mySensor
+deactivate ":RepoSensor"
+":ServiceSensor" --> ":US07addSensorToExistingDeviceController": mySensor
+
+
+":US07addSensorToExistingDeviceController" -> ":Mapper": convertSensorToDTO (mySensor)
+activate ":Mapper"
+
+":Mapper" --> ":US07addSensorToExistingDeviceController" : mySensorDTO
+deactivate ":Mapper"
+
+
+[o<--":US07addSensorToExistingDeviceController": mySensorDTO
+
+deactivate ":US07addSensorToExistingDeviceController"
+
+
+@enduml

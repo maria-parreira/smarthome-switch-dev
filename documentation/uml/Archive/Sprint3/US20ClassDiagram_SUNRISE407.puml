@@ -1,0 +1,32 @@
+@startuml SUNRISE407_Class_Diagram
+
+class SUNRISE407 {
+    - _sensorType: SensorType
+    - _data: Map<LocalDate,Map<GPSCoordinates,LocalTime>>
+    - _value: SUNRISE407Value
+    + SUNRISE407(sensorCatalogue: SensorCatalogue)
+    - setData(): Map<LocalDate,Map<GPSCoordinates,LocalTime>>
+    + getValue(date: LocalDate , gps: GPSCoordinates): Value
+    - boolean areArgumentsInMap(date: LocalDate, gps: GPSCoordinates): boolean
+    + getSensorType(): SensorType
+}
+
+interface Sensor {
+    + getSensorType: SensorType
+}
+
+interface Value {
+}
+
+class SUNRISE407Value {
+    + SUNRISE407Value(instant: LocalTime)
+    - _iValue: Timestamp
+    - areConstructorArgumentsValid(instant: LocalTime)
+    + toString(): String
+}
+
+SUNRISE407 ..|> Sensor : implements
+SUNRISE407 -- SUNRISE407Value : uses >
+SUNRISE407Value ..|> Value : implements
+
+@enduml

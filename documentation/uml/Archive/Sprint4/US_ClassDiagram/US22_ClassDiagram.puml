@@ -1,0 +1,91 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+Sensor_Value --|> Sensor : extends >
+DP22C ..|> Sensor_Value : implements >
+DP22C ..|> AggregateRoot : implements >
+DP22CValue ..|> ValueObject : implements >
+DP22CValue ..|> Value : implements >
+DP22C -- DP22CValue : uses >
+DP22C -- SensorID : uses >
+DP22C -- SensorModelID : uses >
+DP22C -- DeviceID : knows >
+SensorID ..|> ValueObject : implements >
+SensorModelID ..|> ValueObject : implements >
+DeviceID ..|> ValueObject : implements >
+SensorID ..|> DomainID : implements >
+SensorModelID ..|> DomainID : implements >
+DeviceID ..|> DomainID : implements >
+
+
+
+interface ValueObject{
+}
+
+interface Sensor{
+}
+
+interface Sensor_Value{
++ getValue()
+}
+
+interface AggregateRoot{
+}
+
+interface Value{
+}
+
+interface DomainID{
+}
+
+class DP22C{
+- _sensorValue: DP22CValue
+- _deviceID: DeviceID
+- _sensorModelID: SensorModelID
+- _sensorID: SensorID
+- _sensorData: Map <LocalTime, Double>
+
++ DP22C(deviceID, sensorModelID, sensorID): DP22C
+- areConstructorArgumentsValid (sensorID,deviceId,sensorModelID): boolean
+- setData(): Map <Integer, Double>
++ setValue(): void
++ identity(): SensorID
++ getValue (): Value
++ sameAs (object): boolean
++ equals (object): boolean
++ getDeviceID: DeviceID
++ getSensorModelID: SensorModelID
+}
+
+
+class DP22CValue {
+
+- powerConsumptionValue: Double
++ DP22CValue (value): DP22CValue
++ get_Value(): Double
++ equals (object): boolean
++ toString(): String
+}
+
+class DeviceID {
+- _ID: String
++ DeviceID(stringID): DeviceID
++ equals(object): boolean
++ hashCode(): int
++ toString(): String
+}
+
+class SensorID {
+- _ID: String
++ SensorID(stringID): SensorID
++ equals(object): boolean
++ toString(): String
+}
+
+class SensorModelID {
+- _ID: String
++ SensorModelID(stringID): SensorModelID
++ equals(object): boolean
++ toString(): String
+}
+@enduml

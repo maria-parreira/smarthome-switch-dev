@@ -1,0 +1,52 @@
+@startuml
+
+note "- LightBlue color represents Aggregate Root \n- Grey color represents Value Objects" AS N1
+
+House #LightBlue-down-> HouseID : has
+House -down->  Location : has
+Location -left->  GPSCoordinates : has
+GPSCoordinates -down-> Latitude : has
+GPSCoordinates -down-> Longitude : has
+Location -down-> Address :has
+Location -down-> ZipCode: has
+
+Room #LightBlue-down-> RoomID : has
+Room -down-> Dimensions : has
+Dimensions -down-> Length : has
+Dimensions -down-> Width : has
+Dimensions -down-> Height : has
+Room -down-> FloorNumber : has
+Room -up-> HouseID : has
+
+Device #LightBlue-down-> DeviceID : has
+Device -down-> DeviceName : has
+Device -down-> DeviceModel : has
+Device -up-> RoomID : has
+Device -down-> ActivationStatus: has
+
+Sensor #LightBlue-down-> SensorID : has
+Sensor -up-> DeviceID : has
+Sensor -right-> SensorModelID : has
+
+SensorModel #LightBlue-left-> SensorModelID : has
+SensorModel -up-> SensorTypeID : has
+SensorModel -down-> SensorModelName : has
+
+SensorType #LightBlue-down-> SensorTypeID : has
+SensorType -up-> Description : has
+SensorType -up-> Unit : has
+
+Actuator #LightBlue-down-> ActuatorID : has
+Actuator -down-> ActuatorModelID : has
+Actuator -down-> DeviceID : has
+
+ActuatorModel #LightBlue-down-> ActuatorModelID : has
+ActuatorModel -down-> ActuatorTypeID : has
+ActuatorModel -down-> ActuatorModelName : has
+
+ActuatorType #LightBlue-down-> ActuatorTypeID : has
+ActuatorType -down-> Description : has
+ActuatorType -down-> Unit : has
+
+
+@enduml

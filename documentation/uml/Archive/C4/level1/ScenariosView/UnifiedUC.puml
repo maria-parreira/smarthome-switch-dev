@@ -1,0 +1,100 @@
+@startuml
+'https://plantuml.com/use-case-diagram
+
+left to right direction
+
+
+
+Actor Administrator as admin
+Actor PowerUser as pw
+Actor RoomOwner as ro
+
+
+usecase "UC01: Configure house location" as UC1
+usecase "UC02: Add room to House" as UC2
+usecase "UC03: Access list of rooms" as UC3
+usecase "UC04: Define a sensor type" as UC4
+usecase "UC05: Add device to room" as UC5
+usecase "UC06: Access list of all devices" as UC6
+usecase "UC07: Add sensor to device" as UC7
+usecase "UC08: Deactivate device" as UC8
+usecase "UC09: List devices by functionality" as UC9
+usecase "UC12: Add actuator to device" as UC12
+usecase "UC33: Get readings of device within Period" as UC33
+usecase "UC34: Get the maximum instantaneous temperature difference between a device of inside and outside room" as UC34
+usecase "Get list of actuator types" as UC101
+usecase "Get list of sensor types" as UC103
+
+usecase "UC36: Get peak power consumption" as UC36
+usecase "UC37: Close roller blind" as UC37
+
+usecase "Get list of active devices" as UCAccessListOfActiveDevices
+
+usecase "Get list of actuator models" as UC102
+
+
+usecase "Get list of sensor models" as UC104
+
+
+
+usecase "Get list of readings" as UC105
+usecase "Get list of sensors" as UC106
+usecase "Get list of active devices" as UCAccessListOfActiveDevices
+
+UC7 --> UC104 #line.dashed : <<includes>>
+UC8 --> UC6 #line.dashed : <<includes>>
+UC5 --> UC3 #line.dashed : <<includes>>
+UC7 --> UCAccessListOfActiveDevices #line.dashed : <<includes>>
+
+
+
+UC12 --> UCAccessListOfActiveDevices #line.dashed
+UC12 --> UC102 #line.dashed
+UC33 --> UC105 #line.dashed : <<includes>>
+UC105 --> UC6 #line.dashed : <<includes>>
+UC102 --> UC101 #line.dashed : <<includes>>
+UC104 --> UC103 #line.dashed : <<includes>>
+
+UC34 --> UC105 #line.dashed : <<includes>>
+UC105 --> UC106 #line.dashed : <<includes>>
+UC106 --> UC6 #line.dashed : <<includes>>
+
+admin --> UC1
+admin --> UC2
+admin --> UC3
+pw --> UC3
+ro --> UC3
+
+ro --> UC6
+ro --> UC8
+ro --> UC33
+ro --> UC34
+
+admin --> UC5
+admin --> UC6
+admin --> UC7
+admin --> UC8
+admin --> UC9
+admin --> UC4
+admin --> UC12
+admin --> UC33
+admin --> UC34
+
+pw --> UC5
+pw --> UC6
+pw --> UC7
+pw --> UC8
+pw --> UC33
+pw --> UC34
+
+admin --> UC36
+pw --> UC36
+
+ro --> UC37
+admin --> UC37
+pw --> UC37
+
+UC36 --> UC33 #line.dashed : <<includes>>
+
+
+@enduml

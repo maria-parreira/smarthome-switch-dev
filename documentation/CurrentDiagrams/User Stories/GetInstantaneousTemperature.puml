@@ -1,0 +1,64 @@
+@startuml
+'https://plantuml.com/use-case-diagram
+
+title <font color=#800020> Get Instantaneous Temperature Outside </font>
+
+autonumber
+
+participant ":GetInstantaneousTemperatureOutsideController"
+participant ":SensorMapper"
+participant ":ServiceRoom"
+participant ":IRepositoryRoom"
+participant ":ServiceDevice"
+participant ":IRepositoryDevice"
+participant ":ServiceSensor"
+participant ":IRepositorySensor"
+participant "sensor.identity():SensorID"
+participant "mySensor:GA100K"
+
+
+[o-> ":GetInstantaneousTemperatureOutsideController" ++: getInstantaneousTemp(String SensorID)
+":GetInstantaneousTemperatureOutsideController" -> ":SensorMapper" ++: convertToSensorId(String SensorID)
+":SensorMapper" --> ":GetInstantaneousTemperatureOutsideController" --: sensorID
+":GetInstantaneousTemperatureOutsideController" -> ":ServiceRoom" ++: getRoomsOutside()
+":ServiceRoom" -> ":IRepositoryRoom" ++: getOutsideRooms()
+":IRepositoryRoom" --> ":ServiceRoom" --: roomsOutside
+":ServiceRoom" --> ":GetInstantaneousTemperatureOutsideController" --: roomsOutside
+
+loop room : roomsOutside
+
+":GetInstantaneousTemperatureOutsideController" -> ":ServiceDevice" ++: getDevicesInRoom(roomID)
+":ServiceDevice" -> ":IRepositoryDevice" ++: getDevicesInRoom(roomID)
+":IRepositoryDevice" --> ":ServiceDevice" --: devicesInRoom
+":ServiceDevice" --> ":GetInstantaneousTemperatureOutsideController" --: devicesInRoom
+
+loop device : devicesInRoom
+
+":GetInstantaneousTemperatureOutsideController" -> ":ServiceSensor" ++: getSensorsByDeviceID(deviceID)
+":ServiceSensor" -> ":IRepositorySensor" ++: getSensorsByDeviceID(deviceID)
+":IRepositorySensor" --> ":ServiceSensor" --: sensorsInDevice
+":ServiceSensor" --> ":GetInstantaneousTemperatureOutsideController" --: sensorsInDevice
+
+loop sensor : sensorsInDevice
+
+
+":GetInstantaneousTemperatureOutsideController" -> ":ServiceSensor" ++: isSensorOfTemperature(sensor)
+":ServiceSensor" --> ":GetInstantaneousTemperatureOutsideController" --: true
+":GetInstantaneousTemperatureOutsideController" -> "sensor.identity():SensorID" ++: equals(sensorID)
+"sensor.identity():SensorID" --> ":GetInstantaneousTemperatureOutsideController" --: true
+
+ note left of ":GetInstantaneousTemperatureOutsideController"
+                If sensorModelID == "GA100K" and
+                sensor.identity() == sensorID
+                return true
+end note
+
+":GetInstantaneousTemperatureOutsideController" -> "mySensor:GA100K" ++: getValue()
+"mySensor:GA100K" --> ":GetInstantaneousTemperatureOutsideController" --: tempOutside
+":GetInstantaneousTemperatureOutsideController" -> ":GetInstantaneousTemperatureOutsideController" : tempOutside.toString()
+end loop
+end loop
+end loop
+
+[o<--":GetInstantaneousTemperatureOutsideController" : strTempOutside
+@enduml

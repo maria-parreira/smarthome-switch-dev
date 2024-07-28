@@ -1,0 +1,26 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+!pragma teoz true
+
+
+box "<<container>> \n  :Backend"
+    participant " <<component>> \n :Server" as Server
+    participant " <<component>> \n :BD" as BD
+end box
+
+[o-> Server: POST /X
+
+note right
+  Add X.
+  X can represent room, device, sensor, sensor type or actuator
+end note
+
+Server -> BD : insert
+BD --> Server : xDataModel
+[o<-- Server: 201 - CREATED + body
+
+
+
+@enduml

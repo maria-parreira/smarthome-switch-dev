@@ -1,0 +1,90 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+package "Actuator Type Aggregate" {
+
+ImplFactoryActuatorType "1" ..|> "1" FactoryActuatorType : implements >
+ActuatorType "1" -- "1" Unit : has >
+ActuatorType "1" -- "1" Description : has >
+ActuatorType "1" -- "1" ActuatorTypeID : has >
+RepoActuatorType "1" ..|> "1" RepoInterface : implements >
+ImplFactoryActuatorType "1" -- "1" ActuatorType : creates >
+ActuatorType "*" -- "1" RepoActuatorType : uses >
+ActuatorTypeID "1" ..|> "1" DomainID : implements >
+ActuatorType "1" ..|> "1" AggregateRoot : implements >
+Unit "1" ..|> "1" ValueObject : implements >
+Description "1" ..|> "1" ValueObject : implements >
+
++interface FactoryActuatorType{
++ createActuatorType(actuatorModelName, Value actuatorValue, actuatorID, deviceID, actuatorModelID) : ActuatorType
+}
+
++class ImplFactoryActuatorType {
++ createActuatorType(actuatorModelName, Value actuatorValue, actuatorID, deviceID, actuatorModelID) : ActuatorType
+}
+
++class ActuatorType {
+-unit: Unit
+-description: Description
++ actuatorTypeID: ActuatorTypeID
++ ActuatorType(unit, description, actuatorTypeID) : ActuatorType
++ sameAs(object): boolean
++ equals(object): boolean
++ getUnit(): Unit
++ getDescription(): Description
++ identity(): ActuatorTypeID
+}
+
++class ActuatorTypeID{
+- actuatorTypeID: String
++ actuatorTypeID (actuatorTypeID): ActuatorTypeID
+-isActuatorTypeIDValid(actuatorTypeID): boolean
++ equals (object): boolean
++ toString(): String
+}
+
++class Description {
+- description: String
++ Description (description): Description
+- isDescriptionValid(): boolean
++ equals (object): boolean
++ toString(): String
++ getDescription(): String
+}
+
++class Unit {
+- unit : String
++ Unit (unit) : Unit
+- isUnitValid (): boolean
++ equals (object): boolean
++ toString(): String
+}
+
++class RepoActuatorType{
+- listOfActuatorTypes: List <ActuatorType>
++ save(ActuatorType) : ActuatorType
++ update(ActuatorType) : ActuatorType
++ findAll()
++ ofIdentity(id) : ActuatorType
++ findRepositoryId(id) : ActuatorTypeID
++ containsOfIdentity(id) : boolean
+}
+
++interface RepoInterface{
++ save() : T
++ findAll() : T
++ ofIdentity() : T
++ containsOfIdentity() : T
+}
+
++interface DomainID{
+}
+
++interface AggregateRoot{
+}
+
++interface ValueObject{
+}
+
+}
+@enduml

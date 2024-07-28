@@ -1,0 +1,23 @@
+@startuml
+'https://plantuml.com/component-diagram
+
+
+component "<<container>> \n Backend" {
+port port1
+
+component "<<component>> \n Server"{
+port port2
+
+}
+component "<<component>> \n BD" {
+}
+
+}
+
+
+"REST API" -- port1
+port1 -- port2
+"<<component>> \n Server" -- "<<component>> \n BD"
+
+
+@enduml

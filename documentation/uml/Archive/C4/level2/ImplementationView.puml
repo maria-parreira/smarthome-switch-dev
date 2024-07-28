@@ -1,0 +1,11 @@
+@startuml
+'https://plantuml.com/component-diagram
+
+
+package "SmartHome" {
+  folder "Backend" {
+    }
+}
+
+
+@enduml

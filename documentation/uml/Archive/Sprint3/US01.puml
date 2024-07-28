@@ -1,0 +1,47 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title <font color=#800020>US01: Configure the location of the house</font>
+
+skinparam sequence {
+ArrowColor #800020
+LifeLineBorderColor #800020
+LifeLineBackgroundColor #E6E6FA
+ParticipantBorderColor #800020
+ParticipantBackgroundColor #E6E6FA
+}
+
+autonumber
+
+[o->":ConfigureHouseLocationController": configureHouseLocation(locationDTO)
+activate ":ConfigureHouseLocationController"
+":ConfigureHouseLocationController"->"myHouse :House": defineLocation(address, zipCode, latitude, longitude)
+activate "myHouse :House"
+"myHouse :House"->"FactoryLocation" : createLocation(address, zipCode)
+activate "FactoryLocation"
+"FactoryLocation"->"myLocation :Location" : Location(address, zipCode, factoryGPSCoordinates)
+activate "myLocation :Location"
+"myLocation :Location"-->"FactoryLocation" : myLocation
+deactivate "myLocation :Location"
+"FactoryLocation"-->"myHouse :House" : myLocation
+deactivate "FactoryLocation"
+"myHouse :House"->"myLocation :Location" : defineGPSCoordinates(latitude, longitude)
+activate "myLocation :Location"
+"myLocation :Location"->"FactoryGPSCoordinates" : createGPSCoordinates(latitude, longitude)
+"FactoryGPSCoordinates"->"myGPSCoordinates :GPSCoordinates" : GPSCoordinates(latitude, longitude)
+activate "myGPSCoordinates :GPSCoordinates"
+"myGPSCoordinates :GPSCoordinates"-->"FactoryGPSCoordinates" : myGPSCoordinates
+deactivate "myGPSCoordinates :GPSCoordinates"
+"FactoryGPSCoordinates"-->"myLocation :Location" : myGPSCoordinates
+"myLocation :Location"->"myHouse :House"  : myGPSCoordinates
+deactivate "myLocation :Location"
+"myHouse :House"-->":ConfigureHouseLocationController": myLocation
+deactivate "myHouse :House"
+":ConfigureHouseLocationController"->"LocationDTOMapper": Domain2DTO(myLocation)
+activate "LocationDTOMapper"
+"LocationDTOMapper"-->":ConfigureHouseLocationController": locationDTO
+deactivate "LocationDTOMapper"
+[o<--":ConfigureHouseLocationController": locationDTO
+deactivate ":ConfigureHouseLocationController"
+
+@enduml

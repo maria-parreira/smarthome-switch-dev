@@ -1,0 +1,32 @@
+@startuml PC500W_Class_Diagram
+
+class PC500W {
+    - _sensorType: SensorType
+    - _readings: Map <LocalTime, Double>
+    - _value: PC500WValue
+
+    + PC500W(SensorCatalogue: SensorCatalogue)
+    + getSensorType(): SensorType
+    + getValue (LocalTime dateTime): PC500WValue
+}
+
+interface Sensor {
+    + getSensorType(): SensorType
+}
+
+interface Value {
+}
+
+class PC500WValue {
+    - _nValue: Double
+    + PC500WValue(Double nValue)
+    - areConstructorArgumentsValid (Double nValue): Boolean
+    + get_nValue(): Double
+    + toString(): String
+}
+
+PC500W ..|> Sensor : implements
+PC500W -- PC500WValue : uses >
+PC500WValue ..|> Value : implements
+
+@enduml

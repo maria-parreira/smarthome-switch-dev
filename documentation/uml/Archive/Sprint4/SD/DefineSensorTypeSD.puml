@@ -1,0 +1,74 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title <font color=#800020>US04: Define Sensor Type</font>
+
+autonumber
+
+participant ":US04DefineSensorTypeController"
+participant ":SensorTypeMapper"
+participant "description :Description"
+participant "unit :Unit"
+participant "sensorTypeID :SensorTypeID"
+participant ":SensorTypeService"
+participant ":ImplFactorySensorType"
+participant "sensorType :SensorType"
+participant "repoSensorType :RepoSensorType"
+
+[o-> ":US04DefineSensorTypeController" : defineSensorType(sensorTypeDTO)
+activate ":US04DefineSensorTypeController"
+":US04DefineSensorTypeController" -> ":SensorTypeMapper" : createDescription(sensorTypeDTO.getDescription())
+activate ":SensorTypeMapper"
+":SensorTypeMapper" -> "description :Description" : Description(sensorTypeDTO.getDescription())
+activate "description :Description"
+"description :Description" --> ":SensorTypeMapper" : description
+deactivate "description :Description"
+":US04DefineSensorTypeController" <-- ":SensorTypeMapper" : description
+":US04DefineSensorTypeController" -> ":SensorTypeMapper" : createUnit(sensorType.getUnit())
+":SensorTypeMapper" -> "unit :Unit" : Unit(sensorType.getUnit())
+activate "unit :Unit"
+"unit :Unit" --> ":SensorTypeMapper" : unit
+deactivate "unit :Unit"
+
+":US04DefineSensorTypeController" <-- ":SensorTypeMapper" : unit
+":US04DefineSensorTypeController" -> ":SensorTypeMapper" : createSensorTypeID(sensorTypeDTO.getSensorTypeID())
+":SensorTypeMapper" -> "sensorTypeID :SensorTypeID" : SensorTypeID(sensorTypeDTO.getSensorTypeID())
+activate "sensorTypeID :SensorTypeID"
+"sensorTypeID :SensorTypeID" --> ":SensorTypeMapper" : sensorTypeID
+deactivate "sensorTypeID :SensorTypeID"
+
+":US04DefineSensorTypeController" <-- ":SensorTypeMapper" : sensorTypeID
+deactivate ":SensorTypeMapper"
+note left
+Assuming that a verification of \n duplicate SensorTypeID was \n already done in other controller
+end note
+
+":US04DefineSensorTypeController" -> ":SensorTypeService" : sensorTypeService.createSensorType(sensorTypeID, description, unit)
+activate ":SensorTypeService"
+":SensorTypeService" -> ":ImplFactorySensorType" : createSensorType(sensorTypeID, description, unit)
+activate ":ImplFactorySensorType"
+":ImplFactorySensorType" -> "sensorType :SensorType" : SensorType(sensorTypeID, description, unit)
+activate "sensorType :SensorType"
+
+"sensorType :SensorType" --> ":ImplFactorySensorType" : sensorType
+deactivate "sensorType :SensorType"
+":ImplFactorySensorType" --> ":SensorTypeService" : sensorType
+deactivate ":ImplFactorySensorType"
+
+":SensorTypeService" -> "repoSensorType :RepoSensorType" : repoSensorType.save(sensorType)
+activate "repoSensorType :RepoSensorType"
+"repoSensorType :RepoSensorType" --> ":SensorTypeService" : sensorType
+deactivate "repoSensorType :RepoSensorType"
+":SensorTypeService" --> ":US04DefineSensorTypeController" : sensorType
+deactivate ":SensorTypeService"
+
+":US04DefineSensorTypeController" -> ":SensorTypeMapper" : DomainToDTO(sensorType)
+activate ":SensorTypeMapper"
+":US04DefineSensorTypeController" <-- ":SensorTypeMapper" : sensorTypeDTO
+deactivate ":SensorTypeMapper"
+
+[o<-- ":US04DefineSensorTypeController" : sensorTypeDTO
+
+deactivate ":US04DefineSensorTypeController"
+
+@enduml

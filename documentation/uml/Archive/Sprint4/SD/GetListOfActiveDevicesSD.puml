@@ -1,0 +1,43 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+
+title Get List of Active Devices
+
+autonumber
+
+[o-> ":GetListOfActiveDevicesController" : getListOfActiveDevices()
+activate ":GetListOfActiveDevicesController"
+
+loop device : allDevices
+
+":GetListOfActiveDevicesController"->":RepositoryDevice" : findAll()
+activate ":RepositoryDevice"
+
+":RepositoryDevice"-->":RepositoryDevice" : allDevices
+
+
+    ":RepositoryDevice"->":Device": device.getActivationStatus(true)
+    activate ":Device"
+    ":Device"-->":RepositoryDevice" : activeDevices
+    deactivate ":Device"
+
+            note left of ":Device"
+                If there isn't any active device in the room,
+                it returns an empty list.
+            end note
+end
+
+":RepositoryDevice"-->":GetListOfActiveDevicesController" : activeDevices
+deactivate ":RepositoryDevice"
+
+":GetListOfActiveDevicesController"->":DeviceMapper" : deviceToDTO (activeDevices)
+activate ":DeviceMapper"
+
+":DeviceMapper"-->":GetListOfActiveDevicesController" : activeDevicesDTO
+deactivate ":DeviceMapper"
+
+[o<--":GetListOfActiveDevicesController" : activeDevicesDTO
+deactivate ":GetListOfActiveDevicesController"
+
+@enduml

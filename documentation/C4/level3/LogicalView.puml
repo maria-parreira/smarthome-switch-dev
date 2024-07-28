@@ -1,0 +1,32 @@
+@startuml
+'https://plantuml.com/component-diagram
+
+
+component "<<container>> \n Backend" {
+port port1
+port port3
+port port5
+
+component "<<component>> \n Server"{
+port port2
+port port4
+port port6
+
+}
+component "<<component>> \n BD" {
+}
+
+}
+
+
+"REST API" -- port1
+port1 -- port2
+port3 -- port4
+"FE REST API" -- port3
+port5 -- port6
+port5 -( "Weather Service"
+
+"<<component>> \n Server" -(0- "<<component>> \n BD"
+
+
+@enduml

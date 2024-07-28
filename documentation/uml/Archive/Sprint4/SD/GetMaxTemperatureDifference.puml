@@ -1,0 +1,31 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+title I want to get the maximum instantaneous temperature difference between a device in the room and the outside, in a given period.
+
+participant ":Controller"
+participant ":ServiceReadings"
+participant ":RepositoryReadings"
+participant "outsideDevice:Device"
+participant ":ReadingsMapper"
+
+autonumber
+[o-> ":Controller" ++: getMaxTempDifference(entryDTO)
+":Controller"->":ServiceReadings" ++: getMaxTempDifference(deviceID, sensorID, startTime, endTime)
+":ServiceReadings"->":RepositoryReadings" ++: getDeviceReadings(deviceID, sensorID, startTime, endTime)
+note left of ":RepositoryReadings"
+                Retrieves all readings with the specified deviceID and within the specified period.
+                If there aren't any readings within the period, it returns an empty list.
+            end note
+":RepositoryReadings"-->":ServiceReadings" --: readings
+
+":ServiceReadings"->"outsideDevice:Device" ++: getValue()
+"outsideDevice:Device"-->":ServiceReadings" --: temperatureOutside
+":ServiceReadings"->":ServiceReadings" : getMaximumDifference(readings, temperatureOutside)
+":ServiceReadings"-->":Controller" --: maxDifference
+":Controller"->":ReadingsMapper" ++: mapToDTO(maxDifference)
+":ReadingsMapper"-->":Controller" --: maxDifferenceDTO
+
+[o<--":Controller" : maxDifferenceDTO
+deactivate ":Controller"
+@enduml

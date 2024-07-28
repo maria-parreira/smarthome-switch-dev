@@ -1,0 +1,108 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+ImplFactorySensor "1" ..|> "1" FactorySensor : implements >
+SensorExample "1" -- "1" ImplFactorySensor : < creates
+SensorExample "*" -- "1" RepositorySensor : uses >
+RepositorySensor "1"  ..|> "1" Repository : implements >
+SensorExample "1" ..|>"1"  AggregateRoot : implements >
+SensorValue "1" ..|> "1" SensorValueTypeA : implements >
+SensorValueTypeB "1" --|> "1"  Sensor : extends >
+SensorValueTypeA"1"  --|> "1"  Sensor : extends >
+
+SensorValue "1" ..|> "1" ValueObject : implements >
+Sensor "1" ..|> "1" AggregateRoot : implements >
+AggregateRoot "1" --|> "1" DomainEntity : extends >
+SensorID  "1" ..|> "1" DomainId : implements >
+SensorExample "1" -- "1" SensorValue : has >
+SensorExample"1"  -- "1" SensorID : has >
+
+
+
++interface ValueObject{
+}
+
++interface Sensor{
+}
+
++interface SensorValueTypeA{
++ getValue(value Double))
+}
+
++interface SensorValueTypeB{
++getValue(LocalTime dateTime)
+}
+note left: Different sensors implement different interfaces for different applications of getValue() method.
+
+
++interface DomainEntity{
+}
+
++interface FactorySensor{
++ createSensor(sensorModelName, deviceId, sensorModelID, sensorID): Sensor
+
+}
+
++class ImplFactorySensor {
++ createSensor(sensorModelName,deviceId, sensorModelID, sensorID): Sensor
+}
+
++interface Repository{
+}
+
++class RepositorySensor{
+- DATA: Map<SensorID,SensorExample>
++ save(SensorExample): SensorExample
++ findAll(): SensorExample
++ ofIdentity(id): SensorExample
++ containsOfIdentity(id): boolean
+}
+
+
++class SensorExample {
+- value: SensorValue
+- deviceId: DeviceId
+- sensorModelID: SensorModelID
+- sensorID: SensorID
+- data: Map<String,Double>
+
++ SensorExample (deviceId, sensorModelID, sensorID): SensorExample
+- areConstructorArgumentsValid (deviceId, sensorModelID, sensorID): boolean
++ identity(): SensorExampleID
++ getValue (): SensorValue
++ sameAs (object): boolean
++ setData (): Map<String,Double>
+}
+
++class SensorID {
+- sensorID: String
++ sensorID (sensorID): SensorID
+- isSensorIDValid (): boolean
++ equals (object): boolean
++ toString (): String
+}
+
+
++class SensorValue {
+- sensorValue (value): SensorValue
++ Value (value Double)
+- areConstructorArgumentsValid (): boolean
++ setData (): Map<String,Double>;
++ getValue (): Value
++ sameAs (object): boolean
+}
+
+
+class SensorValue
+note bottom: Represents several Sensor Values
+
+
++interface AggregateRoot{
+}
+
++interface DomainId{
+}
+
+
+@enduml
+

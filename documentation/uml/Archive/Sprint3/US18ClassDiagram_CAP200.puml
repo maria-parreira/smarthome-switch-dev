@@ -1,0 +1,37 @@
+@startuml CAP200_Class_Diagram
+
+class CAP200 {
+    - _sensorType: SensorType
+    - _data:Map <Integer, Integer>
+    - _value: CAP200Value
+
+    + CAP200(catalogue: Catalogue)
+    + getSensorType(): SensorType
+    + getValue(): Value
+    + setValue(Integer readingID): void
+    + setData(): Map <Integer, Integer>
+}
+
+class CAP200Value {
+    - _dValue: Integer
+
+    + CAP200Value(Integer dValue)
+    + toString(): String
+    - areConstructorArgumentsValid(): boolean
+}
+
+interface Value {
+}
+
+interface Sensor {
+    + getSensorType(): SensorType
+}
+
+
+
+
+CAP200 ..|> Sensor : implements
+CAP200 -- CAP200Value : uses >
+CAP200Value ..|> Value : implements
+
+@enduml

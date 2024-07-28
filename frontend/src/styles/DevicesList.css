@@ -1,0 +1,98 @@
+.devices-list-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: self-start;
+    padding: 30px;
+    background: white; /* Light gray background */
+    border-radius: 20px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.device-card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    text-align: center;
+    transition: transform 0.2s;
+    width: 200px; /* Adjust the width as needed */
+    margin: 20px; /* Adjust the margin as needed */
+}
+
+.device-image {
+    width: 100%;
+    object-fit: cover;
+}
+
+.device-card:hover {
+    background-color: #f0f0f0; /* Light grey background on hover */
+}
+
+.device-card h3 {
+    margin: 0;
+    font-size: 1.2em;
+    color: #333;
+}
+
+
+.add-button {
+    padding: 10px 15px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 10px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    align-self: flex-start;
+}
+
+.add-button:hover {
+    background-color: #0056b3;
+}
+
+.add-device-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+.add-device-form input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    font-size: 1em;
+}
+
+.save-device-button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 3px;
+    background-color: #28a745;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.save-device-button:hover {
+    background-color: #45a049;
+}
+
+@media (max-width: 568px) {
+
+    .devices-list-container {
+        padding: 10px;
+    }
+
+    .card{
+        padding-top: 10px;
+    }
+}

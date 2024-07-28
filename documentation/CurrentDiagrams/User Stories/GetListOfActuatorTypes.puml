@@ -1,0 +1,40 @@
+@startuml
+'https://plantuml.com/use-case-diagram
+
+title <font color=#800020> List all Actuator Types </font>
+
+autonumber
+
+participant ":GetActuatorTypesController"
+participant ":ServiceActuatorType"
+participant ":IRepositoryActuatorType"
+participant ":ActuatorTypeMapper"
+
+
+[o-> ":GetActuatorTypesController" : getActuatorTypes()
+activate ":GetActuatorTypesController"
+
+":GetActuatorTypesController" -> ":ServiceActuatorType": getActuatorTypes()
+activate ":ServiceActuatorType"
+
+":ServiceActuatorType" -> ":IRepositoryActuatorType": findAll()
+activate ":IRepositoryActuatorType"
+
+":IRepositoryActuatorType" --> ":ServiceActuatorType": actuatorTypes
+deactivate ":IRepositoryActuatorType"
+
+":ServiceActuatorType" --> ":GetActuatorTypesController": actuatorTypes
+deactivate ":ServiceActuatorType"
+
+loop for each actuatorType in actuatorTypes
+":GetActuatorTypesController" -> ":ActuatorTypeMapper": actuatorTypeListToDTO(actuatorTypes)
+activate ":ActuatorTypeMapper"
+
+":ActuatorTypeMapper" --> ":GetActuatorTypesController": actuatorTypeDTOs
+deactivate ":ActuatorTypeMapper"
+
+end
+[o<-- ":GetActuatorTypesController" : actuatorTypeDTOs
+deactivate ":GetActuatorTypesController"
+
+@enduml

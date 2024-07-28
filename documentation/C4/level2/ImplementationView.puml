@@ -1,0 +1,16 @@
+@startuml
+'https://plantuml.com/component-diagram
+
+package "SmartHome" {
+  folder "Backend" {
+    }
+  folder "Frontend" {
+    }
+  folder "Weather Service" {
+    }
+}
+
+"Weather Service" ..> "Backend"
+"Frontend" ..> "Backend"
+
+@enduml

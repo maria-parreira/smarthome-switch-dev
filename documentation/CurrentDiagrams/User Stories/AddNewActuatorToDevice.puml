@@ -1,0 +1,99 @@
+@startuml
+'https://plantuml.com/use-case-diagram
+
+title <font color=#800020>UC12: Add an actuator to an existing device in a room</font>
+
+autonumber
+
+participant ":AddActuatorToDeviceController"
+participant ":ActuatorMapper"
+participant ":DeviceMapper"
+participant ":ActuatorID"
+participant ":DeviceID"
+participant ":ActuatorModelMapper"
+participant ":ActuatorModelID"
+participant ":ServiceActuator"
+participant ":FactoryActuator"
+participant ":Actuator"
+participant ":IRepositoryActuator"
+
+
+
+[o-> ":AddActuatorToDeviceController" : addActuatorToDevice(entryDTO)
+activate ":AddActuatorToDeviceController"
+
+
+":AddActuatorToDeviceController" -> ":ActuatorMapper" ++ : convertToActuatorID(entryDTO.getActuatorI())
+
+note left
+The String values of DeviceID, ActuatorModelID and modelName
+were verified in previous controllers.
+Those are considered correct and without need of verification.
+New data introduced by the user is ActuatorID and Value,
+which are verified and created along this method.
+end note
+
+":ActuatorMapper" -> ":ActuatorID" ** : ActuatorID(entryDTO.getActuatorID())
+activate ":ActuatorID"
+":ActuatorMapper" <-- ":ActuatorID" : myActuatorID
+deactivate ":ActuatorID"
+":AddActuatorToDeviceController" <-- ":ActuatorMapper" : myActuatorID
+deactivate ":ActuatorMapper"
+
+":AddActuatorToDeviceController" -> ":DeviceMapper" ++ : DTOToDeviceId(entryDTO.getDeviceID())
+":DeviceMapper" -> ":DeviceID" ** : DeviceID(entryDTO.getDeviceID())
+activate ":DeviceID"
+":DeviceMapper" <-- ":DeviceID" : myDeviceID
+deactivate ":DeviceID"
+":AddActuatorToDeviceController" <-- ":DeviceMapper" : myDeviceID
+deactivate ":DeviceMapper"
+
+":AddActuatorToDeviceController" -> ":ActuatorModelMapper" ++ : convertToActuatorModelID(entryDTO.getActuatorModelID())
+":ActuatorModelMapper" -> ":ActuatorModelID" ** : ActuatorModelID(entryDTO.getActuatorModelID())
+activate ":ActuatorModelID"
+
+":ActuatorModelMapper" <-- ":ActuatorModelID" : myActuatorModelID
+deactivate ":ActuatorModelID"
+
+":AddActuatorToDeviceController" <-- ":ActuatorModelMapper" : myActuatorModelID
+deactivate ":ActuatorModelMapper"
+
+
+
+":AddActuatorToDeviceController" -> ":ServiceActuator" ++ : addNewActuator(myActuatorID,myActuatorName,myActuatorModel)
+":ServiceActuator" -> ":FactoryActuator" ++ : createActuator(myActuatorID,myActuatorName,myActuatorModel)
+":FactoryActuator" -> ":Actuator" ** : Actuator(myActuatorID,myActuatorName,myActuatorModel)
+activate ":Actuator"
+
+":FactoryActuator" <-- ":Actuator" : myActuator
+
+note left
+The FactoryActuator will create
+the specific Actuator relative to
+the actuatorModelID that describes the class name.
+
+Example:
+ActuatorModelID=OPNCL0100
+will attempt to create
+Actuator=OPNCL0100.class
+end note
+
+deactivate ":Actuator"
+":ServiceActuator" <-- ":FactoryActuator" : myActuator
+deactivate ":FactoryActuator"
+
+":ServiceActuator" -> ":IRepositoryActuator" ++ : save(myActuator)
+":ServiceActuator"<-- ":IRepositoryActuator" : myActuator
+deactivate ":IRepositoryActuator"
+":ServiceActuator"-> ":AddActuatorToDeviceController" : myActuator
+deactivate ":ServiceActuator"
+
+":AddActuatorToDeviceController"-> ":ActuatorMapper" ++ : convertToActuatorDTO(myActuator)
+":AddActuatorToDeviceController" <-- ":ActuatorMapper" : myActuatorDTO
+deactivate ":ActuatorMapper"
+
+[o<-- ":AddActuatorToDeviceController" : myActuatorDTO
+deactivate ":AddActuatorToDeviceController"
+
+
+@enduml

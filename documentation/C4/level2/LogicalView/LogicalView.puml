@@ -1,0 +1,30 @@
+@startuml
+'https://plantuml.com/component-diagram
+
+
+component "<<system>> \n Smart Home" {
+component "<<container>> \n Backend"
+component "<<container>> \n Frontend"
+component "<<container>> \n WeatherService"
+
+
+port port1
+port port2
+port port3
+
+}
+
+"REST API" -- port1
+"SmartHome UI" -- port2
+
+label "Weather API" as bb
+port3 -u-( bb
+
+port3 -- "<<container>> \n Frontend"
+port2 -- "<<container>> \n Frontend"
+port1 -- "<<container>> \n Backend"
+"<<container>> \n Frontend" -d- "<<container>> \n Backend"
+"<<container>> \n WeatherService" -l- "<<container>> \n Backend"
+
+
+@enduml

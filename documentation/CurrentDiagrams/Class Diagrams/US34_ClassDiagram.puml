@@ -1,0 +1,145 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+title <font color=#800020> UC34: Get the max temperature difference between a device outside and the outside, in a given period </font>
+
+'left to right direction
+
+class GetMaxTemperatureDifferenceController
+
+
+class GetMaxDifferenceDTO
+class ServiceSensorReading
+
+class DeviceMapper
+
+
+interface IRepositorySensorReading
+class SensorReading
+
+class DeviceId
+class Reading
+class SensorReadingID
+class Timestamp
+
+
+GetMaxTemperatureDifferenceController --o ServiceSensorReading : has >
+GetMaxTemperatureDifferenceController --o GetMaxDifferenceDTO : uses >
+
+
+
+
+DeviceMapper --> DeviceId : instantiates >
+
+
+ServiceSensorReading --> IRepositorySensorReading : uses >
+ServiceSensorReading --> DeviceMapper : uses >
+IRepositorySensorReading --> SensorReading : stores >
+
+SensorReading --o DeviceId : has >
+SensorReading --o SensorID : has >
+SensorReading --o Reading : has >
+SensorReading --o Timestamp : has >
+SensorReading --o SensorReadingID : has >
+
+class GetMaxTemperatureDifferenceController {
+- serviceSensorReading : ServiceSensorReading
++ getMaxTemperatureDifferenceController(serviceSensorReading : ServiceSensorReading)
++ getMaxTemperatureDifference(getMaxDifferenceDTO : GetMaxDifferenceDTO ) : Integer
+}
+
+class ServiceSensorReading {
+- IRepositorySensorReading: repositorySensorReading
++ ServiceSensorReading(repositorySensorReading: IRepositorySensorReading)
++ getSensorReadingsBetweenTimestamp(deviceId: DeviceId, sensorID: SensorID, start: Timestamp, end: Timestamp): List<Integer>
++ getMaxDifference(outsideTemperature : Integer , readingsBetweenTimeStamp : List<Integer> ): int
+}
+
+
+class GetMaxDifferenceDTO {
+- deviceId: String
+- sensorID: String
+- deltaTime: Integer
+- start: Timestamp
+- end: Timestamp
+
++ GetMaxDifferenceDTO(getMaxDifferenceDTO.deviceIDOutdoor, getMaxDifferenceDTO.startTime, getMaxDifferenceDTO.endTime)
++ getDeviceId(): String
++ getSensorID(): String
++ getDeltaTime(): int
++ getStart(): Timestamp
++ getEnd(): Timestamp
+}
+
+interface IRepositorySensorReading {
++getSensorReadingsBetweenTimestamp(deviceId: DeviceId, sensorID: SensorID, start: Timestamp, end: Timestamp)
+}
+
+class DeviceMapper {
++ DTOToDeviceId(deviceId: String): DeviceId
+}
+
+class DeviceId {
+- deviceId: String
++ DeviceId(deviceId: String): DeviceId
+}
+
+
+
+class SensorID {
+- sensorId: String
++ SensorID(sensorId: String): SensorID
+}
+
+class SensorID {
+- sensorID: String
++ SensorID(sensorID: String) : SensorID
+- isSensorIDValid(sensorID: String): boolean
++ equals (object: Object): boolean
++ toString(): String
++ hashCode(): int
+}
+
+class Reading {
+- reading: String
++ Reading(reading: String) : Reading
++ equals (object: Object): boolean
++ toString(): String
++ hashCode(): int
+}
+
+class SensorReadingID {
+- sensorReadingID: String
++ SensorReadingID(sensorReadingID: String) : SensorReadingID
+- isSensorReadingIDValid(sensorReadingID: String): boolean
++ equals (object: Object): boolean
++ toString(): String
++ hashCode(): int
+}
+
+class Timestamp {
+}
+
+
+
+class SensorReading {
+- deviceId: DeviceId
+- sensorID: SensorID
+- reading: Reading
+- timestamp: Timestamp
+- sensorReadingID: SensorReadingID
++ SensorReading(deviceId: DeviceId, sensorId: SensorID, reading: Reading, timestamp: Timestamp, sensorReadingID: SensorReadingID) : SensorReading
++ getReading(): Reading
++ getDeviceId(): DeviceId
++ getSensorID(): SensorID
++ getTimestamp(): Timestamp
++ identity(): SensorReadingID
++ equals (object: Object): boolean
++ sameAs (object: Object): boolean
++ hashCode(): int
+}
+
+
+
+
+@enduml

@@ -1,0 +1,89 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+Sensor_Value --|> Sensor : extends >
+SUNSET567 ..|> Sensor_Value : implements >
+SUNSET567 ..|> AggregateRoot : implements >
+SUNSET567Value ..|> ValueObject : implements >
+SUNSET567Value ..|> Value : implements >
+SUNSET567 -- SUNSET567Value : uses >
+SUNSET567 -- SensorID : uses >
+SUNSET567 -- SensorModelID : uses >
+SUNSET567 -- DeviceID : knows >
+SensorID ..|> ValueObject : implements >
+SensorModelID ..|> ValueObject : implements >
+DeviceID ..|> ValueObject : implements >
+SensorID ..|> DomainID : implements >
+SensorModelID ..|> DomainID : implements >
+DeviceID ..|> DomainID : implements >
+
+
+
+interface ValueObject{
+}
+
+interface Sensor{
+}
+
+interface Sensor_Value{
++ getValue()
+}
+
+interface AggregateRoot{
+}
+
+interface Value{
+}
+
+interface DomainID{
+}
+
+class SUNSET567{
+- _sensorValue: SUNSET567Value
+- _deviceID: DeviceID
+- _sensorModelID: SensorModelID
+- _sensorID: SensorID
+- _sensorData: Map <LocalTime, Double>
+
++ SUNSET567(device id: Device id, sensorModelID: SensorModelID, sensorID:SensorId): SUNSET567
+- areConstructorArgumentsValid (sensorID: SensorID, deviceID: DeviceID, sensorModelID: SensorModelID): boolean
+- setData(): Map <Integer, Double>
++ setValue(): void
++ identity(): SensorID
++ getValue (): Value
++ sameAs (object : Object): boolean
++ equals (object : Object): boolean
++ getDeviceID: DeviceID
++ getSensorModelID: SensorModelID
+}
+
+
+class SUNSET567Value {
+
+- powerConsumptionValue: Double
++ SUNSET567Value (value): SUNSET567Value
++ toString(): String
+}
+
+class DeviceID {
+- _ID: String
++ DeviceID(stringID): DeviceID
++ equals(object : Object): boolean
++ hashCode(): int
++ toString(): String
+}
+
+class SensorID {
+- _ID: String
++ SensorID(stringID): SensorID
++ equals(object : Object): boolean
++ toString(): String
+}
+
+class SensorModelID {
+- _ID: String
++ SensorModelID(stringID): SensorModelID
++ equals(object : Object): boolean
++ toString(): String
+}
+@enduml

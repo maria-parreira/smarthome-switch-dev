@@ -1,0 +1,89 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title <font color=#800020>Configure the Location of the House</font>
+
+autonumber
+
+[o->":ConfigureHouseLocationController": configureLocation(LocationDto)
+activate ":ConfigureHouseLocationController"
+
+":ConfigureHouseLocationController" -> ":HouseMapper" : DTOtoHouseId(LocationDto.getHouseId())
+activate ":HouseMapper"
+
+":HouseMapper" -> "houseId:HouseId"** : HouseId(houseId)
+activate "houseId:HouseId"
+
+"houseId:HouseId" --> ":HouseMapper" : houseId
+deactivate "houseId:HouseId"
+
+":HouseMapper" --> ":ConfigureHouseLocationController" : houseId
+
+":ConfigureHouseLocationController" -> ":HouseMapper" : DTOToLocation(locationDto)
+
+":HouseMapper" -> "gps:GPSCoordinates"** : GPSCoordinates(locationDto.getLatitude(),locationDto.getLongitude())
+activate "gps:GPSCoordinates"
+
+"gps:GPSCoordinates" --> ":HouseMapper" : gps
+deactivate "gps:GPSCoordinates"
+
+":HouseMapper" -> "address:Address"** : Address(locationDto.getAddress())
+activate "address:Address"
+
+"address:Address" --> ":HouseMapper" : address
+deactivate "address:Address"
+
+":HouseMapper" -> "zipCode:ZipCode"** : ZipCode(locationDto.getCountry(),locationDto.getZipCode())
+activate "zipCode:ZipCode"
+
+"zipCode:ZipCode" --> ":HouseMapper" : zipCode
+deactivate "zipCode:ZipCode"
+
+":HouseMapper" -> "location:Location"** : Location(address,zipCode,gps)
+activate "location:Location"
+
+"location:Location" --> ":HouseMapper" : newLocation
+deactivate "location:Location"
+
+":HouseMapper" --> ":ConfigureHouseLocationController" : newLocation
+deactivate ":HouseMapper"
+
+":ConfigureHouseLocationController" -> "service:HouseService"** : configureLocation(newLocation,houseId)
+activate "service:HouseService"
+
+"service:HouseService" -> ":HouseRepository" : ofIdentity(houseId)
+activate ":HouseRepository"
+
+note right
+only continue if true
+else returns false and stop
+end note
+
+":HouseRepository" --> "service:HouseService" : myHouse
+deactivate ":HouseRepository"
+
+"service:HouseService" -> "myHouse:House"** : configureLocation(newLocation)
+activate "myHouse:House"
+
+"myHouse:House" --> "service:HouseService" : true
+deactivate "myHouse:House"
+
+"service:HouseService" -> ":HouseRepository" : update(myHouse)
+activate ":HouseRepository"
+
+":HouseRepository" --> "service:HouseService" : myHouse
+deactivate ":HouseRepository"
+
+"service:HouseService" --> ":ConfigureHouseLocationController" : myHouse
+deactivate "service:HouseService"
+
+":ConfigureHouseLocationController" -> ":HouseMapper" : houseToDTO(myHouse)
+activate ":HouseMapper"
+
+":HouseMapper" --> ":ConfigureHouseLocationController" : houseDto
+deactivate ":HouseMapper"
+
+[o<-- ":ConfigureHouseLocationController" : houseDto
+
+
+@enduml

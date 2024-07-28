@@ -1,0 +1,74 @@
+.table-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border-radius: 10px
+}
+
+.device-table {
+    border-collapse: separate;
+    margin-bottom: 20px;
+    width: 100%;
+    border-radius: 10px;
+
+}
+
+.device-table th, .device-table td {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 8px;
+    text-align: left;
+    color: darkgrey;
+    display: flex;
+    flex-direction: row;
+}
+
+.device-table th {
+    color: black;
+    position: relative;
+    display: flex;
+    justify-content: center; /* Center the text horizontally */
+    align-items: center; /* Center the text vertically */
+    border-radius: 10px 10px 0 0;
+}
+
+.device-table th > div {
+    display: flex;
+    justify-content: center; /* Center the text horizontally */
+    align-items: center; /* Center the text vertically */
+}
+
+.device-table th > button {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.device-table td {
+    background-color: white;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.add-button-table {
+    margin-left: 10px;
+    padding: 5px 10px;
+    border: none;
+    background-color: white;
+    color: black;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.add-button:hover, .save-device-button:hover, .add-button-table:hover {
+    background-color: #f0f0f0;
+}
+
+.table-wrapper.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}

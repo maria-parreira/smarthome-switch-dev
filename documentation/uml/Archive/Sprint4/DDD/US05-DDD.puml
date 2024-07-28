@@ -1,0 +1,89 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title <font color=#800020>US05: Add a new device to a room</font>
+
+autonumber
+
+[o-> ":US05AddNewDeviceToRoomController" : addNewDeviceToRoom(deviceDTO)
+activate ":US05AddNewDeviceToRoomController"
+
+deactivate ":ServiceDevice"
+deactivate ":RepositoryDevice"
+deactivate "device :Device"
+
+":US05AddNewDeviceToRoomController" -> ":DeviceMapper" : DTOToDeviceId(deviceDTO.getDeviceId)
+activate ":DeviceMapper"
+":DeviceMapper" -> "deviceId :DeviceId" ** : DeviceId(deviceId)
+activate "deviceId :DeviceId"
+"deviceId :DeviceId" --> ":DeviceMapper" : deviceId
+deactivate "deviceId :DeviceId"
+":DeviceMapper" --> ":US05AddNewDeviceToRoomController" : deviceId
+deactivate ":DeviceMapper"
+
+":US05AddNewDeviceToRoomController" -> ":DeviceMapper" : DTOToRoomId(deviceDTO.getRoomId)
+activate ":DeviceMapper"
+":DeviceMapper" -> "roomId :RoomId" ** : RoomId(roomId)
+activate "roomId :RoomId"
+"roomId :RoomId" --> ":DeviceMapper" : roomId
+deactivate "roomId :RoomId"
+":DeviceMapper" --> ":US05AddNewDeviceToRoomController" : roomId
+deactivate ":DeviceMapper"
+
+":US05AddNewDeviceToRoomController" -> ":DeviceMapper" : DTOToDeviceName(deviceDTO.getDeviceName)
+activate ":DeviceMapper"
+":DeviceMapper" -> "deviceName :DeviceName" ** : DeviceName(deviceName)
+activate "deviceName :DeviceName"
+"deviceName :DeviceName" --> ":DeviceMapper" : deviceName
+deactivate "deviceName :DeviceName"
+":DeviceMapper" --> ":US05AddNewDeviceToRoomController" : deviceName
+deactivate ":DeviceMapper"
+
+":US05AddNewDeviceToRoomController" -> ":DeviceMapper" : DTOToDeviceModel(deviceDTO.getDeviceModel)
+activate ":DeviceMapper"
+":DeviceMapper" -> "deviceModel :DeviceModel" ** : DeviceModel(deviceModel)
+activate "deviceModel :DeviceModel"
+"deviceModel :DeviceModel" --> ":DeviceMapper" : deviceModel
+deactivate "deviceModel :DeviceModel"
+":DeviceMapper" --> ":US05AddNewDeviceToRoomController" : deviceModel
+deactivate ":DeviceMapper"
+
+":US05AddNewDeviceToRoomController" -> ":DeviceMapper" : DTOToActivationStatus(deviceDTO.getActivationStatus)
+activate ":DeviceMapper"
+":DeviceMapper" -> "activationStatus :ActivationStatus" ** : ActivationStatus(activationStatus)
+activate "activationStatus :ActivationStatus"
+"activationStatus :ActivationStatus" --> ":DeviceMapper" : activationStatus
+deactivate "activationStatus :ActivationStatus"
+":DeviceMapper" --> ":US05AddNewDeviceToRoomController" : activationStatus
+deactivate ":DeviceMapper"
+
+":US05AddNewDeviceToRoomController" -> ":ServiceDevice" : addNewDevice(deviceId, roomId, deviceName, deviceModel, activationStatus)
+activate ":ServiceDevice"
+activate ":ServiceDevice"
+":ServiceDevice" -> ":ImplFactoryDevice" : createDevice(deviceId, roomId, deviceName, deviceModel, activationStatus)
+activate ":ImplFactoryDevice"
+":ImplFactoryDevice" -> "device :Device" ** : Device(deviceId, roomId, deviceName, deviceModel, activationStatus)
+activate "device :Device"
+"device :Device" --> ":ImplFactoryDevice" : device
+deactivate "device :Device"
+":ImplFactoryDevice" --> ":ServiceDevice" : device
+deactivate ":ImplFactoryDevice"
+
+":ServiceDevice" -> ":RepositoryDevice" : save(device)
+note left: If the device already exists, an exception will be thrown.
+activate ":RepositoryDevice"
+":RepositoryDevice" --> ":ServiceDevice" : device
+deactivate ":RepositoryDevice"
+
+":ServiceDevice" --> ":US05AddNewDeviceToRoomController" : device
+deactivate ":ServiceDevice"
+
+":US05AddNewDeviceToRoomController" -> ":DeviceMapper" : domainToDTO(device)
+activate ":DeviceMapper"
+":DeviceMapper" --> ":US05AddNewDeviceToRoomController" : deviceDTO
+deactivate ":DeviceMapper"
+
+[o<-- ":US05AddNewDeviceToRoomController" : deviceDTO
+deactivate ":US05AddNewDeviceToRoomController"
+
+@enduml

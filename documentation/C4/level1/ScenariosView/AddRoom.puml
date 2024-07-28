@@ -1,0 +1,12 @@
+@startuml
+'https://plantuml.com/use-case-diagram
+
+left to right direction
+
+Actor Administrator as admin
+
+usecase "UC02: Add room" as UC2
+
+admin --> UC2
+
+@enduml

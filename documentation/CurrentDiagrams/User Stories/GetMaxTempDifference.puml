@@ -1,0 +1,68 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+!pragma teoz true
+
+title <font color=#800020>US34: Get maximum temperature difference between a device in a room and the outside</font>
+
+autonumber
+
+participant ":GetMaxTemperatureDifferenceController"
+participant ":SensorReadingService"
+participant ":DeviceMapper"
+participant ":DeviceId"
+participant ":SensorService"
+participant ":IRepositorySensor"
+participant ":GetMaxDifferenceDTO"
+participant ":IRepositorySensorReading"
+
+
+
+[o-> ":GetMaxTemperatureDifferenceController" ++ : getMaxTemperatureDifference(getMaxDifferenceDTO)
+
+":GetMaxTemperatureDifferenceController" -> ":SensorReadingService" ++ : getTemperatureReadingsFromDevice(getMaxDifferenceDTO.getDeviceIDIndoor(), \n getMaxDifferenceDTO.getStartTime(), getMaxDifferenceDTO.getEndTime())
+":SensorReadingService" -> ":SensorReadingService" : List<SensorReading> allTemperatureReadings
+":SensorReadingService" -> ":DeviceMapper" ++ : DTOToDeviceId(deviceID)
+":DeviceMapper" -> ":DeviceId" ** : DeviceId(deviceId)
+":DeviceId" --> ":DeviceMapper" -- : deviceID
+":DeviceMapper" --> ":SensorReadingService" -- : deviceID
+":SensorReadingService" -> ":SensorService" ++ : getSensorsByDeviceID(deviceID)
+
+":SensorService" -> ":IRepositorySensor" ++ : containsOfIdentity(deviceID)
+":IRepositorySensor" -> ":SensorService" -- : true
+note right
+  If the device does not exist,
+  the system will throw an exception
+end note
+":SensorService" -> ":IRepositorySensor" ++ : getSensorsByDeviceID(deviceID)
+":IRepositorySensor" -> ":SensorService" -- : sensorsInDevice
+":SensorService" --> ":SensorReadingService" -- : sensorsInDevice
+
+loop sensor : sensorsInDevice
+":SensorReadingService" -> ":SensorService" ++ : isSensorOfTemperature(sensor)
+":SensorReadingService" <-- ":SensorService" -- : true
+note right
+  If the sensor is not a temperature sensor,
+  the system will throw an exception
+end note
+
+
+":SensorReadingService" -> ":SensorReadingService" :List<SensorReading> sensorReadingsWithinPeriod = getSensorReadingsBetweenTimestamp(deviceID, sensor.identity(), startTime, endTime)
+
+":SensorReadingService" -> ":SensorReadingService" : allTemperatureReadings.addAll(sensorReadingsWithinPeriod)
+end
+":SensorReadingService" --> ":GetMaxTemperatureDifferenceController" -- : allInsideTemperatureReadings
+
+note left
+  Same process as above for outside temperature
+end note
+
+":GetMaxTemperatureDifferenceController" ->":GetMaxDifferenceDTO" ++: getMaxDifferenceDTO.getDeltaTime()
+":GetMaxDifferenceDTO" --> ":GetMaxTemperatureDifferenceController" -- : deltaTime
+
+":GetMaxTemperatureDifferenceController" ->":SensorReadingService" ++ : getDifferenceBetweenReadings(allInsideTemperatureReadings, allOutsideTemperatureReadings, deltaTime)
+":GetMaxTemperatureDifferenceController" <--":SensorReadingService" :maxDifference
+
+[o<-- ":GetMaxTemperatureDifferenceController" -- : maxDifference
+
+
+@enduml

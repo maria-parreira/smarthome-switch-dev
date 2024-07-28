@@ -1,0 +1,13 @@
+smartHomeDDD.domain.actuator
+smartHomeDDD.domain.actuatorModel
+smartHomeDDD.domain.actuatorType
+smartHomeDDD.domain.controllers
+smartHomeDDD.domain.device
+smartHomeDDD.domain.house
+smartHomeDDD.domain.dto
+smartHomeDDD.domain.repository
+smartHomeDDD.domain.room
+smartHomeDDD.domain.sensor
+smartHomeDDD.domain.sensorModel
+smartHomeDDD.domain.sensorType
+smartHomeDDD.domain.valueobject

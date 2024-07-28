@@ -1,0 +1,125 @@
+@startuml
+class Room {
+    -_roomId: RoomId
+    -_floorNumber : FloorNumber
+    -_dimensions: Dimensions
+    # Actuator (actuatorValue, actuatorID, deviceID, actuatorModelID): Actuator
+    + addDevice(deviceId): boolean
+    +sameAs(object: Object): boolean
+    +equals(object: Object): boolean
+
+
+
+}
+class Dimensions {
+-_length: Length
+-_width: Width
+-_height: Height
++ Dimensions(length: Length, width: Width, height: Height): Dimensions
++ equals(object: Object): boolean
+    + toString(): String
+}
+class Height {
+    -_height: double
+    +Height(height: double): Height
+    + equals(object: Object): boolean
+    + toString(): String
+}
+
+class Width {
+    -_width: double
+    +Width(width: double): Width
+    + equals(object: Object): boolean
+    + toString(): String
+}
+
+class Length {
+    -_length: double
+    + Length(length: double): Length
+    + equals(object: Object): boolean
+    + toString(): String
+}
+
+class RoomId {
+    -_id : String
+    + RoomId(roomId: String): RoomId
+    + equals(object: Object): boolean
+    + toString(): String
+}
+
+class FloorNumber {
+    -_floorNumber:floorNumber
+     + equals(object: Object): boolean
+        + toString(): String
+}
+
+interface AggregateRoot {
+}
+
+
+interface FactoryRoom {
++ createRoom(houseId, roomId, floorNumber, dimensions)
+}
+
+class ImplFactoryRoom {
++ createRoom(houseId, roomId, floorNumber, dimensions)
+}
+
+class RepositoryRoom {
+    + DATA: Map<RoomID, Room>
+    + save(room) : Room
+    + update(room) : Room
+    + findAll()
+    + ofIdentity(id) : Room
+    + containsOfIdentity(id) : boolean
+
+}
+interface RepoInterface{
++ save() : T
++ findAll() : T
++ ofIdentity() : T
++ containsOfIdentity() : T
+ }
+
+class HouseId {
+    -_houseId: String
+    HouseId(houseId: String): HouseId
+    + equals(object: Object): boolean
+    + toString(): String
+}
+
+interface ValueObject {
+}
+
+ImplFactoryRoom ...|> FactoryRoom : implements >
+ImplFactoryRoom ...> Room : creates >
+
+interface DomainID {
+}
+interface DomainEntity {
+}
+
+
+
+Room ...|> AggregateRoot : implements >
+Room...> HouseId : has >
+Room...>RoomId : has >
+Room...>FloorNumber : has >
+Room...> Dimensions : has >
+Room -- RepositoryRoom :uses >
+RepositoryRoom "1" ..|> "1" RepoInterface : implements >
+FloorNumber "1" ..|> "1" ValueObject : implements >
+Length "1" ..|> "1" ValueObject : implements >
+Width "1" ..|> "1" ValueObject : implements >
+Height "1" ..|> "1" ValueObject : implements >
+Dimensions "1" ..|> "1" ValueObject : implements >
+RoomId "1" ..|> "1" DomainID : implements >
+AggregateRoot --|> DomainEntity : extends >
+HouseId "1" ..|> "1" DomainID : implements >
+
+Dimensions*--- Length : contains
+Dimensions*--- Width : contains
+Dimensions*--- Height : contains
+
+
+@enduml

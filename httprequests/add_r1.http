@@ -1,0 +1,32 @@
+POST http://localhost:8080/api/v1/rooms
+Content-Type: application/json
+
+{
+  "length": "10.0",
+  "width": "10.0",
+  "height": "10.0",
+  "floorNumber": "0",
+  "houseId": "H1",
+  "isInside": "true"
+}
+
+> {%
+  client.global.set("r1", response.body.roomId);
+%}
+
+###
+POST http://localhost:8080/api/v1/devices
+Content-Type: application/json
+
+{
+  "deviceName": "lamp",
+  "deviceModel": "m1",
+  "activationStatus": "true",
+  "roomId": "{{r1}}"
+}
+
+> {%
+    client.global.set("d1", response.body.deviceId);
+%}
+
+###

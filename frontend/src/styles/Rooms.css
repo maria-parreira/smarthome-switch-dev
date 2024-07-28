@@ -1,0 +1,166 @@
+
+.rooms-container {
+    height: 90vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px;
+    background: #ebebeb; /* Light gray background */
+    border-radius: 20px; /* Rounded corners */
+
+}
+
+.room-grey-container {
+    height: 90vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px;
+    background: #f4f4f4; /* Light gray background */
+    border-radius: 20px; /* Rounded corners */
+}
+
+.darker-container {
+    height: calc(100vh - 60px); /* Adjust based on your header's height */
+    width: 100%;
+    background: #e3e3e3;
+    align-items: center;
+    flex-direction: column;
+    display: flex;
+    border-radius: 20px;
+    padding: 0;
+}
+
+/*.buttons-container {*/
+/*    display: flex;*/
+/*    flex-wrap: wrap;*/
+/*    flex-direction: row;*/
+/*    gap: 20px;*/
+/*}*/
+
+.room-button {
+    position: relative;
+    width: 170px;
+    height: 150px;
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+    cursor: auto;
+    color: black;
+    font-family: Poppins;
+    font-size: 16px;
+    font-weight: 400;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    transition: transform 0.3s;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: transparent; /* Remove background color */
+}
+
+.room-button:hover {
+    transform: scale(1.07); /* Scale up the button on hover */
+}
+
+.room-button::before {
+    content: '';
+    position: absolute;
+    top: 50px; /* Adjust to create a wider top frame */
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    border-radius: 10px; /* Border radius for the inner image */
+    background-size: cover;
+    background-position: center;
+    z-index: 0; /* Place image behind the text */
+}
+
+.room-button.bathroom {
+    background-color: white
+}
+
+.room-button.bedroom {
+    background-color: white
+}
+
+.room-button.kitchen {
+    background-color:white/* Frame color */
+}
+
+.room-button.living-room {
+    background-color: white
+}
+
+.room-button.office {
+    background-color: white
+}
+
+.room-button.garden {
+    background-color: white /* Frame color */
+}
+
+.room-button span {
+    position: relative;
+    width: 100%;
+    text-align: center;
+    padding: 5px 0;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    margin-top: 10px; /* Adjust to move the text down */
+}
+
+
+.back-button:hover {
+    transition: background-color 0.5s ease; /* transition effect */
+    background: #0097ff;
+}
+
+.room-menu-button {
+    background: none;
+    border: none;
+    color: black;
+    font-size: 2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+}
+
+.room-menu-button:hover {
+    color: grey;
+}
+
+.device-button{
+    background: #ffffff; /* Blue background */
+    border: none;
+    color: black; /* White text */
+    font-family: Poppins;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    position: page;
+    text-align: center;
+    margin: auto;
+    padding: 10px 20px; /* Padding around the text */
+    border-radius: 30px; /* Rounded corners */
+
+}
+
+.room {
+    padding: 20px;
+    text-align: center;
+    color: black; /* Ensure the text color is visible against the background */
+    background: blue;
+}
+
+.room h1 {
+    font-size: 2rem;
+}
+
+.room p {
+    font-size: 1.2rem;
+}

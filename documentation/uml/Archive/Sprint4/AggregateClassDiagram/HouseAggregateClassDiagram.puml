@@ -1,0 +1,118 @@
+@startuml
+'https://plantuml.com/class-diagram
+package "House Aggregate" {
+interface AggregateRoot
+class House
+interface FactoryHouse
+class ImplFactoryHouse
+class Location
+class GPSCoordinates
+interface DomainID
+interface valueObject
+class HouseID
+class ZipCode
+class Address
+class Latitude
+class Longitude
+
+
+ImplFactoryHouse ..|> FactoryHouse : implements
+ImplFactoryHouse --> House : create >
+House ..|> AggregateRoot: implements
+House <-- Location: has >
+House <-- HouseID : has >
+Location <-- GPSCoordinates: has >
+Location ..|> valueObject: implements
+GPSCoordinates ..|> valueObject: implements
+Location <-- Address: has >
+Address ..|> valueObject: implements
+ZipCode ..|> valueObject: implements
+Location <-- ZipCode : has >
+GPSCoordinates <-- Latitude : has >
+Latitude ..|> valueObject: implements
+Longitude ..|> valueObject: implements
+GPSCoordinates <-- Longitude : has >
+HouseID ..|> DomainID : implements
+
+class House {
+-Location _location
+-HouseID _houseID
+# House(_location,__houseID):House
++getLocation():_location
++configureLocation(Location location);
++identity():_houseID
++sameAs(Object object):boolean
++equals(Object object):boolean
+}
+
+class HouseID{
+-String _houseID
++HouseID(_houseID): HouseID
++equals(Object object): boolean
++toString():String
++hashCode():boolean
+}
+
+
+class Location {
+- Address _address
+- ZipCode _zipCode
+- GPSCoordinates _gpsCoordinates
++ Location(_address,_zipCode,_latitude,_longitude):Location
++ getAddress()
++ getZipCode()
++ getGPSCoordinates()
+}
+
+class Address{
+- String _address
++ Address (_address): Address
++ equals(object Object): boolean
++toString():String
+}
+
+class ZipCode{
+-String _zipCode
++ ZipCode (_zipCode,String country): ZipCode
+-isZipCodeValid(String country,String zipCode):boolean
+-matchRegex(String regex,String zipCode):boolean
++ equals(object Object): boolean
++toString():String
+}
+
+
+
+class GPSCoordinates {
+-Longitude _longitude
+-Latitude _latitude
++GPSCoordinates(_latitude, _longitude):GPSCoordinates
+-areGPSCoordinatesValid()
++ getLatitude():double
++ getLongitude():double
+}
+
+class Longitude{
+- double _longitude
++Longitude(_longitude): Longitude
+-isLongitudeValid(_longitude): boolean
++equals(object Object): boolean
++toString():String
+}
+
+class Latitude{
+- double _latitude
++Latitude(_latitude): Latitude
+-isLatitudeValid(_latitude): boolean
++equals(object Object): boolean
++toString():String
+}
+
+interface FactoryHouse {
+
+}
+
+class ImplFactoryHouse {
++House(HouseId, Location location):House
+}
+}
+@enduml

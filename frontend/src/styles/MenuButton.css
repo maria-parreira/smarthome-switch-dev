@@ -1,0 +1,84 @@
+.menu-button-container{
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.menu-container {
+    background-color: white;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.menu-list {
+    display: flex;
+    gap: 16px; /* Adjust the gap as needed */
+    list-style: none; /* Remove default list styles */
+    padding: 0;
+    margin: 0;
+}
+
+.menu-item {
+    display: inline-block;
+}
+
+.menu-button {
+    background-color: #e5e7eb;
+    color: #6b7280;
+    padding: 8px 16px;
+    border-radius: 9999px;
+    border: none;
+    cursor: pointer;
+}
+
+.menu-button:hover {
+    transform: scale(1.1); /* Slightly increase the size */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add a shadow */
+    background-color: #e5e7eb; /* Darker shade of the button color */
+}
+
+.menu-button2 {
+    font-size: 18px;
+    font-family: Poppins, serif;
+    font-weight: 500;
+    line-height: 22px;
+    letter-spacing: 0;
+}
+
+
+.menu-button.active {
+    background-color: white;
+    color: black;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.menu-button-container {
+    margin-right: 10px; /* Adjust this value as needed */
+}
+
+
+
+.introMenuRoom {
+    margin-top: 20px;
+    font-size: 1.75rem;
+    color: #333;
+    margin-bottom: 20px;
+    gap: 20px;
+}
+
+
+@media (max-width: 568px) {
+
+    .menu-container {
+        overflow-x: scroll;
+        scrollbar-width: none;
+    }
+
+    .element {
+        overflow-x: hidden;
+    }
+
+}

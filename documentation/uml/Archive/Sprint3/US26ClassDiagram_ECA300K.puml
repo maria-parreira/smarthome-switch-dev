@@ -1,0 +1,36 @@
+@startuml ECA300K_Class_Diagram
+
+class ECA300K {
+    - _sensorType: SensorType
+    - _data: Map<LocalTime, Double>
+    - _readings: List<Double>
+    - _value: ECA300KValue
+    + ECA300K(catalogue: Catalogue)
+    + getSensorType(): SensorType
+    + addPowerReading(singleReading: Double): boolean
+    + getReadingsWithinPeriod(start: LocalTime, end: LocalTime): List<Double>
+    + getValue(start: LocalTime, end: LocalTime): Value
+}
+
+interface Sensor {
+    + getSensorType: SensorType
+}
+
+interface Value {
+}
+
+class ECA300KValue {
+        - eValue: Double
+        + ECA300KValue(Double eValue): Value
+        - areConstructorArgumentsValid(Double eValue): boolean
+        + toString(): String
+    }
+
+
+ECA300K ..|> Sensor : implements
+ECA300K -- ECA300KValue : uses >
+ECA300KValue ..|> Value : implements
+
+
+
+@enduml

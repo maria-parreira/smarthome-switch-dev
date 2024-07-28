@@ -1,0 +1,34 @@
+@startuml
+'https://plantuml.com/use-case-diagram
+title  GetActuatorModelsController: Lists all actuator models by actuator type.
+
+autonumber
+
+participant ":GetActuatorModelsController"
+participant ":ServiceActuatorModel"
+participant ":ActuatorTypeMapper"
+participant ":RepositoryActuatorModel"
+participant ":ActuatorModelMapper"
+
+[o-> ":GetActuatorModelsController" : getActuatorModels(actuatorTypeDTO)
+activate ":GetActuatorModelsController"
+":GetActuatorModelsController" -> ":ServiceActuatorModel": getModelsByActuatorType(actuatorTypeDTO)
+activate ":ServiceActuatorModel"
+":ServiceActuatorModel" -> ":ActuatorTypeMapper": getModelsByActuatorType(actuatorTypeDTO.getActuatorTypeID())
+activate ":ActuatorTypeMapper"
+":ActuatorTypeMapper" --> ":ServiceActuatorModel": actuatorTypeID
+deactivate ":ActuatorTypeMapper"
+":ServiceActuatorModel" -> ":RepositoryActuatorModel": getModelsByActuatorType(actuatorTypeID)
+activate ":RepositoryActuatorModel"
+":RepositoryActuatorModel" --> ":ServiceActuatorModel": actuatorModels
+deactivate ":RepositoryActuatorModel"
+":ServiceActuatorModel" -> ":ActuatorModelMapper": actuatorModelListToDTO(actuatorModels)
+activate ":ActuatorModelMapper"
+":ActuatorModelMapper" --> ":ServiceActuatorModel": actuatorModelDTOs
+deactivate ":ActuatorModelMapper"
+":ServiceActuatorModel" --> ":GetActuatorModelsController": actuatorModelDTOs
+deactivate ":ServiceActuatorModel"
+[o<-- ":GetActuatorModelsController" : actuatorModelDTOs
+
+
+@enduml
