@@ -8,6 +8,15 @@ A Smart Home is a house or apartment that uses IT and networked devices to impro
 
 For more information, you can refer to this [definition of a smart home](https://www.techtarget.com/iotagenda/definition/smart-home-or-building).
 
+<img src="frontend/images/1.png" width="600" height="500">
+<img src="frontend/images/2.png" width="600" height="500">
+<img src="frontend/images/3.png" width="600" height="500">
+<img src="frontend/images/4.png" width="600" height="500">
+<img src="frontend/images/5.png" width="600" height="500">
+
+
+
+
 ## Objective
 
 The objective of this project is to develop a system that allows users to manage their smart homes, including the management of devices that encompass sensor and/or actuator behavior.
