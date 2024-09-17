@@ -25,7 +25,7 @@ The objective of this project is to develop a system that allows users to manage
 
 - Object oriented programming;
 - Domain Driven Design;
-- Onionn Arquitecture;
+- Onion Arquitecture;
 - Database operations;
 - REST API design;
 - Software testing;
