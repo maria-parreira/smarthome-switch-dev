@@ -21,20 +21,32 @@ For more information, you can refer to this [definition of a smart home](https:/
 
 The objective of this project is to develop a system that allows users to manage their smart homes, including the management of devices that encompass sensor and/or actuator behavior.
 
+**The purpose is to practice:**
+
+- Object oriented programming;
+- Domain Driven Design;
+- Onionn Arquitecture;
+- Database operations;
+- REST API design;
+- Software testing;
+- SOLID principles and GRASP patterns;
+- Build tools;
+- Conteinerization.
+
 ## Non-Functional Requirements
 
 - Agile approach.
 - Java programming language.
 - Test-Driven Development (TDD) approach.
 - Minimum 95% of code coverage and mutation coverage of tests.
-- Automatic and regression tests: unit tests (with isolation) must be adopted for domain classes, and integration tests (without isolation) must be adopted for controllers.
+- Automatic and regression tests: unit tests (with isolation) for domain classes, and integration tests (without isolation) for controllers.
 - All code, comments, and documentation in English.
-- Project wiki in the GitHub repository.
 - Visual representation using the C4 and 4+1 models.
 - User interface developed using ReactJS.
 - Responsive user interface (adapt the design of the forms to the type of device used by the user).
 - Support persistence of information in a relational DB server.
 - Obtain weather information from a specialized service through a REST API.
+
 
 ## Domain Model
 
